@@ -13,14 +13,27 @@ export type KnowledgeNodeData = {
   relationCount?: number;
   sourceCount?: number;
   pathActive?: boolean;
+  onActivate?: () => void;
 };
 
 export default function KnowledgeEntityNode({ data }: NodeProps) {
   const d = data as KnowledgeNodeData;
   const asset = d.assetId ? getEditorialAsset(d.assetId) : undefined;
-  return <div className={`${styles.entityNode} ${d.selected?styles.entityNodeSelected:''} ${d.muted?styles.entityNodeMuted:''} ${d.pathActive?styles.entityNodePath:''}`} aria-label={`${d.label}, ${d.type}, ${d.relationCount ?? 0} mối liên hệ, ${d.sourceCount ?? 0} nguồn`}>
+  const activate = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    d.onActivate?.();
+  };
+  return <div
+    className={`${styles.entityNode} ${d.selected?styles.entityNodeSelected:''} ${d.muted?styles.entityNodeMuted:''} ${d.pathActive?styles.entityNodePath:''}`}
+    role="button"
+    tabIndex={0}
+    aria-pressed={Boolean(d.selected)}
+    aria-label={`${d.label}, ${d.type}, ${d.relationCount ?? 0} mối liên hệ, ${d.sourceCount ?? 0} nguồn`}
+    onKeyDown={activate}
+  >
     <Handle type="target" position={Position.Left} className={styles.handle}/>
-    <div className={styles.nodeMedia}>{asset ? <img src={asset.src} alt={asset.alt.vi ?? asset.alt.en}/> : <span>{d.type==='place'?'⌖':d.type==='work'?'▤':d.type==='concept'?'◈':'✦'}</span>}</div>
+    <div className={styles.nodeMedia}>{asset ? <img src={asset.src} alt={asset.alt.vi ?? asset.alt.en} loading="lazy" decoding="async"/> : <span aria-hidden="true">{d.type==='place'?'⌖':d.type==='work'?'▤':d.type==='concept'?'◈':'✦'}</span>}</div>
     <div className={styles.nodeCopy}><small>{d.type}</small><strong>{d.label}</strong>{d.subtitle&&<span>{d.subtitle}</span>}<em className={styles.sourceBadge}>SRC {d.sourceCount ?? 0}</em></div>
     {typeof d.relationCount==='number'&&<b className={styles.nodeCount}>{d.relationCount}</b>}
     <Handle type="source" position={Position.Right} className={styles.handle}/>
