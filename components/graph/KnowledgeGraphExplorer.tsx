@@ -1,11 +1,13 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { ReactFlow, Background, Controls, MiniMap, MarkerType, useReactFlow, ReactFlowProvider, type Edge, type Node, type NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { entities, relationships } from '@/data/augustine';
 import { text } from '@/lib/knowledge/types';
 import { buildExplorationIndex, findRelationshipPath } from '@/lib/knowledge/exploration';
+import { toJourneyHref, type ExplorationContext } from '@/lib/knowledge/exploration-context';
 import { getEditorialAsset } from '@/lib/media/assets';
 import KnowledgeEntityNode, { type KnowledgeNodeData } from './KnowledgeEntityNode';
 import AugustineContextSync from './AugustineContextSync';
@@ -18,14 +20,16 @@ const nodeTypes={knowledge:KnowledgeEntityNode};
 const index=buildExplorationIndex(entities,relationships);
 
 function Canvas(){
- const [lens,setLens]=useState<Lens>('all'); const [query,setQuery]=useState(''); const [selectedId,setSelectedId]=useState('person.augustine-of-hippo'); const [pathOrigin,setPathOrigin]=useState<string|null>(null); const [history,setHistory]=useState<string[]>(['person.augustine-of-hippo']); const {fitView}=useReactFlow();
+ const [lens,setLens]=useState<Lens>('all'); const [query,setQuery]=useState(''); const [selectedId,setSelectedId]=useState('person.augustine-of-hippo'); const [pathOrigin,setPathOrigin]=useState<string|null>(null); const [history,setHistory]=useState<string[]>(['person.augustine-of-hippo']); const [journeyContext,setJourneyContext]=useState<ExplorationContext|null>(null); const {fitView}=useReactFlow();
  const selectedRelations=index.relationsByEntityId.get(selectedId)??[]; const neighbors=index.neighborIdsByEntityId.get(selectedId)??new Set([selectedId]);
  const activePath=useMemo(()=>pathOrigin?findRelationshipPath(pathOrigin,selectedId,relationships):[],[pathOrigin,selectedId]); const pathSet=useMemo(()=>new Set(activePath),[activePath]);
- const focus=useCallback((id:string)=>{setSelectedId(id);setHistory(prev=>prev.at(-1)===id?prev:[...prev,id].slice(-7));requestAnimationFrame(()=>fitView({nodes:[{id}],duration:500,maxZoom:1.15,padding:.7}));},[fitView]);
+ const focus=useCallback((id:string)=>{if(!index.entityById.has(id))return;setSelectedId(id);setHistory(prev=>prev.at(-1)===id?prev:[...prev,id].slice(-7));requestAnimationFrame(()=>fitView({nodes:[{id}],duration:500,maxZoom:1.15,padding:.7}));},[fitView]);
+ useEffect(()=>{const params=new URLSearchParams(window.location.search);const context:ExplorationContext={focusEntityId:params.get('focus')??undefined,journeyId:params.get('journey')??undefined,chapterId:params.get('chapter')??undefined,chapterLabel:params.get('chapterLabel')??undefined};if(context.journeyId)setJourneyContext(context);if(context.focusEntityId&&index.entityById.has(context.focusEntityId))focus(context.focusEntityId)},[focus]);
  const nodes=useMemo<Node<KnowledgeNodeData>[]>(()=>entities.map(entity=>{const visible=lens==='all'||entity.type===lens;const matches=!query||text(entity.labels).toLowerCase().includes(query.toLowerCase());const related=neighbors.has(entity.id)||pathSet.has(entity.id);return{id:entity.id,type:'knowledge',position:positions[entity.id]??{x:0,y:0},data:{label:text(entity.labels),type:entity.type,subtitle:entity.subtype,assetId:assets[entity.id],selected:entity.id===selectedId,muted:!(visible&&matches&&related),relationCount:(index.relationsByEntityId.get(entity.id)??[]).length,sourceCount:entity.sourceRefs.length,pathActive:pathSet.has(entity.id)}}}),[lens,query,selectedId,neighbors,pathSet]);
  const edges=useMemo<Edge[]>(()=>relationships.map(rel=>{const pathEdge=activePath.some((id,i)=>i<activePath.length-1&&((rel.from===id&&rel.to===activePath[i+1])||(rel.to===id&&rel.from===activePath[i+1])));const active=pathEdge||rel.from===selectedId||rel.to===selectedId;return{id:rel.id,source:rel.from,target:rel.to,label:rel.type.replaceAll('_',' ').toLowerCase(),animated:active,markerEnd:{type:MarkerType.ArrowClosed},style:{stroke:pathEdge?'#8b5d18':active?'#c99742':'#9da7ae',strokeWidth:pathEdge?3.5:active?2.6:1.2,opacity:active||neighbors.has(rel.from)&&neighbors.has(rel.to)?1:.15},labelStyle:{fontSize:10,fill:active?'#8a5b17':'#6f756f',fontWeight:active?700:400},labelBgStyle:{fill:'#fbf7ee',fillOpacity:.9}}}),[selectedId,neighbors,activePath]);
  const selected=index.entityById.get(selectedId)??entities[0]; const selectedAsset=assets[selected.id]?getEditorialAsset(assets[selected.id]):undefined; const handleNodeClick:NodeMouseHandler=(_,node)=>focus(node.id);
  return <div className={styles.shell}>
+  {journeyContext&&<div className={styles.journeyBridge}><div><span>Đang khám phá từ Hành trình 01</span><b>{journeyContext.chapterLabel??'Từ Chúa Giêsu đến Nixêa'}</b><small>Explore giữ lại chương bạn vừa rời để bạn có thể quay lại đúng khoảnh khắc đó.</small></div><Link href={toJourneyHref(journeyContext)}>← Trở lại hành trình</Link></div>}
   <header className={styles.universeHeader}><div><div className="eyebrow">Catholic Knowledge · Explore mode</div><h1>Đi vào thế giới của Augustinô.</h1><p>Chọn một thực thể, theo dõi quan hệ của nó và giữ cùng ngữ cảnh trên graph, dòng thời gian và hành trình địa lý.</p></div><div className={styles.history}>{history.map((id,i)=>{const e=index.entityById.get(id);return e?<button onClick={()=>focus(id)} key={`${id}-${i}`}>{i>0&&'‹ '}{text(e.labels)}</button>:null})}</div></header>
   <div className={styles.toolbar}><input className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm Monica, Ambrôsiô, Tự Thuật…" aria-label="Tìm trong bản đồ"/>{([['all','Tất cả'],['person','Nhân vật'],['place','Địa danh'],['work','Tác phẩm'],['concept','Ý tưởng']] as [Lens,string][]).map(([v,l])=><button key={v} onClick={()=>setLens(v)} className={lens===v?styles.activeTool:''}>{l}</button>)}<button onClick={()=>{setPathOrigin(pathOrigin?null:selectedId)}} className={pathOrigin?styles.activeTool:''}>{pathOrigin?'Dừng nối đường':'Bắt đầu nối đường'}</button><button onClick={()=>fitView({duration:450,padding:.2})}>Toàn cảnh</button></div>
   {pathOrigin&&<div className={styles.pathReceipt}><span>Đang nối từ <b>{text(index.entityById.get(pathOrigin)?.labels??{vi:pathOrigin})}</b></span>{activePath.length>1&&<span>{activePath.map(id=>text(index.entityById.get(id)!.labels)).join(' → ')}</span>}</div>}
