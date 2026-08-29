@@ -12,9 +12,14 @@ export const metadata: Metadata = {
 const navItems = [
   ['Discover', '/'],
   ['Explore', '/explore'],
-  ['Learn', '/learn'],
-  ['Timeline', '/timeline'],
   ['Scripture', '/scripture'],
+  ['Doctrine', '/doctrine'],
+  ['Councils', '/councils/nicaea'],
+  ['Timeline', '/timeline'],
+  ['Learn', '/learn/jesus-to-nicaea'],
+  ['Liturgy', '/liturgy'],
+  ['Places', '/places'],
+  ['Kids', '/kids'],
   ['Ask', '/ask'],
 ] as const;
 
