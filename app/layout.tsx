@@ -1,27 +1,26 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import LanguageSwitch from '@/components/i18n/LanguageSwitch';
+import SiteNavigation from '@/components/navigation/SiteNavigation';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Catholic Knowledge',
-  description: 'A visual, source-backed Catholic knowledge atlas.',
+  title: {
+    default: 'Catholic Knowledge',
+    template: '%s · Catholic Knowledge',
+  },
+  description: 'A visual, source-backed Catholic knowledge atlas connecting Scripture, saints, doctrine, history, liturgy and places.',
+  applicationName: 'Catholic Knowledge',
+  category: 'education',
 };
 
-const navItems = [
-  ['Discover', '/'],
-  ['Explore', '/explore'],
-  ['Scripture', '/scripture'],
-  ['Doctrine', '/doctrine'],
-  ['Councils', '/councils/nicaea'],
-  ['Timeline', '/timeline'],
-  ['Learn', '/learn/jesus-to-nicaea'],
-  ['Liturgy', '/liturgy'],
-  ['Places', '/places'],
-  ['Kids', '/kids'],
-  ['Ask', '/ask'],
-] as const;
+function BrandMark() {
+  return <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="1.2" opacity=".45"/>
+    <path d="M16 6v20M10 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M7 22c3-2 6-3 9-3s6 1 9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".65"/>
+  </svg>;
+}
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -32,18 +31,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <header className="site-header">
               <div className="container nav">
                 <Link className="brand" href="/" aria-label="Catholic Knowledge home">
-                  <span className="brand-mark" aria-hidden="true">✦</span>
-                  <span>Catholic Knowledge</span>
+                  <span className="brand-mark"><BrandMark /></span>
+                  <span className="brand-copy"><strong>Catholic Knowledge</strong><small>Visual faith atlas</small></span>
                 </Link>
-                <nav className="nav-links" aria-label="Primary navigation">
-                  {navItems.map(([label, href]) => (
-                    <Link key={href} href={href}>{label}</Link>
-                  ))}
-                </nav>
-                <div className="nav-actions">
-                  <LanguageSwitch />
-                  <Link className="btn btn-primary" href="/explore">Explore</Link>
-                </div>
+                <SiteNavigation />
               </div>
             </header>
             <main>{children}</main>
