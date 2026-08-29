@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { RelationshipOrbit, VisualFlow } from '@/components/visual/Infographics';
 import { entities, getRelations } from '@/data/augustine';
 import { text } from '@/lib/knowledge/types';
 import styles from './home.module.css';
@@ -46,6 +47,11 @@ export default function HomePage() {
         </section>
 
         <section className={styles.categorySection}><div className={styles.sectionTitle}><h2>Explore the Catholic World</h2><Link href="/explore">Open knowledge map →</Link></div><div className={styles.categoryGrid}>{categories.map(([icon,title,body,href])=><Link href={href} className={styles.category} key={title}><b>{icon}</b><div><strong>{title}</strong><small>{body}</small><em>Explore →</em></div></Link>)}</div></section>
+
+        <section style={{display:'grid',gridTemplateColumns:'1.05fr .95fr',gap:12,marginTop:14}}>
+          <article style={{background:'#fffaf1',border:'1px solid #dfd1ba',borderRadius:16,padding:18}}><div className="eyebrow">How knowledge connects</div><h2 style={{font:'30px Georgia,serif',color:'#0b2848',margin:'8px 0 14px'}}>One entity opens into an entire world.</h2><RelationshipOrbit center="Augustine" items={[{label:'Monica',detail:'person'},{label:'Ambrose',detail:'person'},{label:'Hippo',detail:'place'},{label:'Confessions',detail:'work'},{label:'Grace',detail:'doctrine'},{label:'Late Antiquity',detail:'era'}]}/></article>
+          <article style={{background:'linear-gradient(145deg,#0a2847,#071d34)',borderRadius:16,padding:18,color:'#fff'}}><div className="eyebrow">From source to understanding</div><h2 style={{font:'30px Georgia,serif',margin:'8px 0 18px'}}>Evidence becomes a visual learning path.</h2><VisualFlow steps={[{title:'Source',detail:'trusted text or dataset'},{title:'Fact',detail:'structured canonical knowledge'},{title:'Graph',detail:'people, places and ideas connect'},{title:'Explain',detail:'timeline, diagram, journey or AI'}]}/></article>
+        </section>
 
         <section className={styles.dashboard}>
           <article className={styles.featureCard}><span className="eyebrow">Featured · St. Augustine of Hippo</span><h2>{augustine?text(augustine.labels):'St. Augustine of Hippo'}</h2><p>Bishop, Doctor of the Church, and one of the most influential thinkers in Christian tradition.</p><div className={styles.stats}><span><b>354–430</b>Years</span><span><b>2</b>Featured writings</span><span><b>{relationCount}</b>Connections</span></div><Link href="/saints/augustine-of-hippo">Explore His Life →</Link></article>
