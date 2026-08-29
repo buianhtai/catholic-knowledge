@@ -9,7 +9,7 @@ type LocaleContextValue = { locale: AppLocale; setLocale: (locale: AppLocale) =>
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<AppLocale>('en');
+  const [locale, setLocale] = useState<AppLocale>('vi');
 
   useEffect(() => {
     const saved = window.localStorage.getItem('ck-locale');
