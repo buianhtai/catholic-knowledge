@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import EditorialArtwork from '@/components/media/EditorialArtwork';
 import styles from './journey.module.css';
@@ -16,37 +16,41 @@ const chapters = [
 
 export default function JesusToNicaeaPage(){
  const [active,setActive]=useState(0);
- useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.key==='ArrowRight')setActive(v=>Math.min(chapters.length-1,v+1));if(e.key==='ArrowLeft')setActive(v=>Math.max(0,v-1));};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[]);
- const chapter=chapters[active];
+ const sceneRefs=useRef<(HTMLElement|null)[]>([]);
+ useEffect(()=>{
+   const observer=new IntersectionObserver(entries=>{
+     const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+     if(visible){const index=Number((visible.target as HTMLElement).dataset.index);if(!Number.isNaN(index))setActive(index)}
+   },{threshold:[.35,.55,.75]});
+   sceneRefs.current.forEach(el=>el&&observer.observe(el));
+   return()=>observer.disconnect();
+ },[]);
+ const jump=(index:number)=>sceneRefs.current[index]?.scrollIntoView({behavior:'smooth',block:'start'});
  return <main className={styles.page}>
-   <div className={styles.stars} aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div>
-   <header className={styles.top}><Link href="/">☩ <span>Catholic Knowledge</span></Link><div><span>Hành trình 01</span><b>{String(active+1).padStart(2,'0')} / {String(chapters.length).padStart(2,'0')}</b></div></header>
-   <section className={styles.stage}>
-     <div className={styles.intro}>
-       <span className={styles.eyebrow}>Một hành trình xuyên qua lịch sử đức tin</span>
-       <h1>Từ Chúa Giêsu<br/><em>đến Nixêa</em></h1>
-       <p>Không đọc lịch sử như một danh sách ngày tháng. Hãy đi xuyên qua những con người, địa danh và ý tưởng đã kết nối để hình thành Giáo Hội sơ khai.</p>
-       <div className={styles.hint}>Cuộn, chạm hoặc dùng phím ← → để du hành</div>
-     </div>
-     <div className={styles.galaxy} aria-label="Bản đồ hành trình">
-       <div className={styles.orbitA}/><div className={styles.orbitB}/><div className={styles.glow}/>
-       {chapters.map((item,index)=>{const angle=(index/chapters.length)*Math.PI*2-Math.PI/2;const x=50+Math.cos(angle)*39;const y=50+Math.sin(angle)*39;return <button key={item.title} onClick={()=>setActive(index)} className={`${styles.starNode} ${active===index?styles.activeNode:''}`} style={{left:`${x}%`,top:`${y}%`}}><span>{index+1}</span><small>{item.year}</small></button>})}
-       <div className={styles.core}><span>{chapter.year}</span><strong>{chapter.kicker}</strong><small>{active===5?'NIXÊA':'ĐANG DU HÀNH'}</small></div>
-     </div>
+   <div className={styles.sky} aria-hidden="true"><div className={styles.nebula}/><div className={styles.starfield}/><div className={styles.dust}/></div>
+   <header className={styles.top}><Link href="/">☩ <span>Catholic Knowledge</span></Link><div><span>Hành trình 01</span><b>{chapters[active].year}</b></div></header>
+
+   <section className={styles.prologue}>
+     <div className={styles.prologueCopy}><span>Hành trình xuyên qua lịch sử đức tin</span><h1>Từ Chúa Giêsu<br/><em>đến Nixêa</em></h1><p>Đừng đọc lịch sử như một danh sách ngày tháng. Hãy đi xuyên qua một mạng lưới sống động của con người, địa danh, biến cố và ý tưởng.</p><button onClick={()=>jump(0)}>Bắt đầu hành trình ↓</button></div>
+     <div className={styles.origin} aria-hidden="true"><i/><b>Khởi đầu</b><span>k. 30</span></div>
    </section>
 
-   <section className={styles.chapter} key={chapter.title}>
-     <div className={styles.art}><EditorialArtwork assetId={chapter.asset} height={560} radius={0} showCredit={false}/><div className={styles.artShade}/><div className={styles.artLabel}><span>{chapter.year}</span><small>Chặng {active+1} · {chapter.kicker}</small></div></div>
-     <article className={styles.story}>
-       <div className={styles.chapterNumber}>0{active+1}</div>
-       <span className={styles.eyebrow}>{chapter.kicker} · {chapter.year}</span>
-       <h2>{chapter.title}</h2><p>{chapter.body}</p>
-       <div className={styles.constellation}>{chapter.nodes.map((node,index)=><span key={node} style={{animationDelay:`${index*120}ms`}}><i/> {node}</span>)}</div>
-       <div className={styles.controls}><button disabled={active===0} onClick={()=>setActive(v=>Math.max(0,v-1))}>← Chặng trước</button><div className={styles.progress}>{chapters.map((_,i)=><button aria-label={`Đi đến chặng ${i+1}`} key={i} onClick={()=>setActive(i)} className={i<=active?styles.done:''}/>)}</div><button disabled={active===chapters.length-1} onClick={()=>setActive(v=>Math.min(chapters.length-1,v+1))}>Chặng tiếp →</button></div>
-       {active===chapters.length-1&&<Link className={styles.enter} href="/cong-dong/nixea">Bước vào Công đồng Nixêa →</Link>}
-     </article>
-   </section>
+   <div className={styles.journey}>
+     <aside className={styles.timeline} aria-label="Dòng thời gian hành trình">
+       <span className={styles.timelineLabel}>30 → 325</span>
+       <div className={styles.timelineTrack}><i style={{height:`${(active/(chapters.length-1))*100}%`}}/></div>
+       {chapters.map((chapter,index)=><button key={chapter.title} onClick={()=>jump(index)} className={index===active?styles.timelineActive:''}><span>{chapter.year}</span><small>{chapter.kicker}</small></button>)}
+     </aside>
 
-   <section className={styles.epilogue}><span>Không có điểm nào đứng một mình.</span><h2>Mỗi ánh sáng mở ra<br/>một thế giới khác.</h2><p>Con người dẫn đến địa danh. Địa danh dẫn đến biến cố. Biến cố dẫn đến giáo lý, tác phẩm và những câu chuyện tiếp theo.</p><Link href="/kham-pha">Mở bản đồ tri thức →</Link></section>
+     <div className={styles.scenes}>
+       {chapters.map((chapter,index)=><section ref={el=>{sceneRefs.current[index]=el}} data-index={index} key={chapter.title} className={`${styles.scene} ${index===active?styles.sceneActive:''}`}>
+         <div className={styles.sceneArt}><EditorialArtwork assetId={chapter.asset} height={900} radius={0} showCredit={false}/><div className={styles.sceneShade}/></div>
+         <div className={styles.sceneCopy}><span className={styles.kicker}>{chapter.kicker} · {chapter.year}</span><div className={styles.sceneNumber}>{String(index+1).padStart(2,'0')}</div><h2>{chapter.title}</h2><p>{chapter.body}</p><div className={styles.constellation}>{chapter.nodes.map((node,nodeIndex)=><span style={{animationDelay:`${nodeIndex*100}ms`}} key={node}><i/> {node}</span>)}</div>{index===chapters.length-1&&<Link className={styles.enter} href="/cong-dong/nixea">Bước vào Công đồng Nixêa →</Link>}</div>
+         <div className={styles.depth} aria-hidden="true">{chapter.nodes.map((node,nodeIndex)=><span key={node} style={{'--x':`${18+(nodeIndex*21)%68}%`,'--y':`${16+(nodeIndex*27)%72}%`,'--d':`${.65+nodeIndex*.12}`} as React.CSSProperties}>{node}</span>)}</div>
+       </section>)}
+     </div>
+   </div>
+
+   <section className={styles.epilogue}><div className={styles.pullback}><span>325</span><i/><i/><i/><i/><i/><i/><i/></div><div><span>Đây chỉ là một chòm sao.</span><h2>Cả đức tin là<br/>một vũ trụ kết nối.</h2><p>Mỗi con người mở ra một địa danh. Mỗi địa danh mở ra một biến cố. Mỗi biến cố dẫn đến giáo lý, tác phẩm và những hành trình khác.</p><Link href="/kham-pha">Bay ra bản đồ tri thức →</Link></div></section>
  </main>
 }
