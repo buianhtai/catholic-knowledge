@@ -8,13 +8,13 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 type IconName = 'compass' | 'book' | 'cross' | 'timeline' | 'church' | 'map' | 'spark';
 
 const navItems = [
-  { en: 'Explore', vi: 'Khám phá', href: '/explore', icon: 'compass' },
-  { en: 'Scripture', vi: 'Kinh Thánh', href: '/scripture', icon: 'book' },
-  { en: 'Doctrine', vi: 'Giáo lý', href: '/doctrine', icon: 'cross' },
-  { en: 'Timeline', vi: 'Lịch sử', href: '/timeline', icon: 'timeline' },
-  { en: 'Liturgy', vi: 'Phụng vụ', href: '/liturgy', icon: 'church' },
-  { en: 'Places', vi: 'Địa điểm', href: '/places', icon: 'map' },
-  { en: 'Ask', vi: 'Hỏi', href: '/ask', icon: 'spark' },
+  { en: 'Explore', vi: 'Khám phá', enHref: '/explore', viHref: '/kham-pha', icon: 'compass' },
+  { en: 'Scripture', vi: 'Kinh Thánh', enHref: '/scripture', viHref: '/kinh-thanh', icon: 'book' },
+  { en: 'Doctrine', vi: 'Giáo lý', enHref: '/doctrine', viHref: '/giao-ly', icon: 'cross' },
+  { en: 'Timeline', vi: 'Lịch sử', enHref: '/timeline', viHref: '/lich-su-giao-hoi', icon: 'timeline' },
+  { en: 'Liturgy', vi: 'Phụng vụ', enHref: '/liturgy', viHref: '/phung-vu', icon: 'church' },
+  { en: 'Places', vi: 'Địa điểm', enHref: '/places', viHref: '/dia-diem', icon: 'map' },
+  { en: 'Ask', vi: 'Hỏi đáp', enHref: '/ask', viHref: '/hoi-dap', icon: 'spark' },
 ] as const;
 
 function NavIcon({ name }: { name: IconName }) {
@@ -31,27 +31,27 @@ function NavIcon({ name }: { name: IconName }) {
 export default function SiteNavigation() {
   const [open, setOpen] = useState(false);
   const { locale } = useLocale();
+  const isVi = locale === 'vi';
+  const journeyHref = isVi ? '/hanh-trinh/tu-chua-giesu-den-nixea' : '/learn/jesus-to-nicaea';
   return <>
-    <nav className="nav-links" aria-label="Primary navigation">
-      {navItems.map((item) => <Link key={item.href} href={item.href}><NavIcon name={item.icon}/><span>{item[locale]}</span></Link>)}
+    <nav className="nav-links" aria-label={isVi ? 'Điều hướng chính' : 'Primary navigation'}>
+      {navItems.map((item) => <Link key={item.enHref} href={isVi ? item.viHref : item.enHref}><NavIcon name={item.icon}/><span>{item[locale]}</span></Link>)}
     </nav>
     <div className="nav-actions">
       <LanguageSwitch />
-      <Link className="btn btn-primary nav-journey" href="/learn/jesus-to-nicaea">{locale === 'vi' ? 'Hành trình' : 'Start a journey'}</Link>
-      <button className="mobile-menu-trigger" type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen((value) => !value)}>
-        <span/><span/><span/>
-      </button>
+      <Link className="btn btn-primary nav-journey" href={journeyHref}>{isVi ? 'Hành trình' : 'Start a journey'}</Link>
+      <button className="mobile-menu-trigger" type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? (isVi ? 'Đóng điều hướng' : 'Close navigation') : (isVi ? 'Mở điều hướng' : 'Open navigation')} onClick={() => setOpen((value) => !value)}><span/><span/><span/></button>
     </div>
     {open && <div className="mobile-nav-backdrop" onClick={() => setOpen(false)}>
-      <nav id="mobile-navigation" className="mobile-navigation" aria-label="Mobile navigation" onClick={(event) => event.stopPropagation()}>
-        <div className="mobile-navigation-head"><strong>{locale === 'vi' ? 'Khám phá Công giáo' : 'Explore Catholic Knowledge'}</strong><button type="button" aria-label="Close navigation" onClick={() => setOpen(false)}>×</button></div>
+      <nav id="mobile-navigation" className="mobile-navigation" aria-label={isVi ? 'Điều hướng di động' : 'Mobile navigation'} onClick={(event) => event.stopPropagation()}>
+        <div className="mobile-navigation-head"><strong>{isVi ? 'Khám phá Công giáo' : 'Explore Catholic Knowledge'}</strong><button type="button" aria-label={isVi ? 'Đóng điều hướng' : 'Close navigation'} onClick={() => setOpen(false)}>×</button></div>
         <div className="mobile-navigation-grid">
-          {navItems.map((item) => <Link key={item.href} href={item.href} onClick={() => setOpen(false)}><NavIcon name={item.icon}/><span>{item[locale]}</span></Link>)}
-          <Link href="/councils/nicaea" onClick={() => setOpen(false)}><NavIcon name="church"/><span>{locale === 'vi' ? 'Công đồng Nicaea' : 'Council of Nicaea'}</span></Link>
-          <Link href="/saints/augustine-of-hippo" onClick={() => setOpen(false)}><NavIcon name="spark"/><span>{locale === 'vi' ? 'Thánh Augustinô' : 'St. Augustine'}</span></Link>
-          <Link href="/kids" onClick={() => setOpen(false)}><NavIcon name="spark"/><span>{locale === 'vi' ? 'Thiếu nhi' : 'Kids'}</span></Link>
+          {navItems.map((item) => <Link key={item.enHref} href={isVi ? item.viHref : item.enHref} onClick={() => setOpen(false)}><NavIcon name={item.icon}/><span>{item[locale]}</span></Link>)}
+          <Link href={isVi ? '/cong-dong/nixea' : '/councils/nicaea'} onClick={() => setOpen(false)}><NavIcon name="church"/><span>{isVi ? 'Công đồng Nixêa' : 'Council of Nicaea'}</span></Link>
+          <Link href={isVi ? '/cac-thanh/augustino-thanh-hippo' : '/saints/augustine-of-hippo'} onClick={() => setOpen(false)}><NavIcon name="spark"/><span>{isVi ? 'Thánh Augustinô' : 'St. Augustine'}</span></Link>
+          <Link href={isVi ? '/thieu-nhi' : '/kids'} onClick={() => setOpen(false)}><NavIcon name="spark"/><span>{isVi ? 'Thiếu nhi' : 'Kids'}</span></Link>
         </div>
-        <Link className="btn btn-primary mobile-journey" href="/learn/jesus-to-nicaea" onClick={() => setOpen(false)}>{locale === 'vi' ? 'Bắt đầu hành trình học →' : 'Start the Jesus → Nicaea journey'}</Link>
+        <Link className="btn btn-primary mobile-journey" href={journeyHref} onClick={() => setOpen(false)}>{isVi ? 'Bắt đầu hành trình học →' : 'Start the Jesus → Nicaea journey'}</Link>
       </nav>
     </div>}
   </>;
