@@ -10,10 +10,11 @@ Before making meaningful product or architecture changes, read:
 
 1. `docs/01-product/PRD.md`
 2. `docs/02-design/DESIGN_SYSTEM.md`
-3. `docs/03-architecture/SYSTEM_ARCHITECTURE.md`
-4. `docs/04-data/ONTOLOGY.md`
-5. `docs/04-data/SOURCES_AND_LICENSING.md`
-6. Relevant ADRs when present
+3. `docs/02-design/VIETNAMESE_EDITORIAL_STYLE.md`
+4. `docs/03-architecture/SYSTEM_ARCHITECTURE.md`
+5. `docs/04-data/ONTOLOGY.md`
+6. `docs/04-data/SOURCES_AND_LICENSING.md`
+7. Relevant ADRs when present
 
 ## Product Principles
 
@@ -23,6 +24,7 @@ Before making meaningful product or architecture changes, read:
 - AI output must never silently become canonical knowledge.
 - The knowledge model must be reusable across pages and visualizations.
 - EN/VI support is structural, not an afterthought.
+- Vietnamese user-facing copy must be written as natural Vietnamese, not as a word-for-word translation of English. Translate meaning rather than English sentence structure, and follow `docs/02-design/VIETNAMESE_EDITORIAL_STYLE.md`.
 - Do not build a generic SaaS dashboard. The product should feel like a modern digital museum, encyclopedia, and interactive knowledge atlas.
 
 ## Engineering Rules
