@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsx scripts/validate-knowledge.ts",
+    "test": "tsx scripts/validate-knowledge.ts && tsx scripts/validate-visual-glyphs.ts",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run test && npm run typecheck && npm run build"
   },
