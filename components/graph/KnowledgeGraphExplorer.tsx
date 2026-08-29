@@ -18,6 +18,7 @@ import { entities, relationships } from '@/data/augustine';
 import { text } from '@/lib/knowledge/types';
 import { getEditorialAsset } from '@/lib/media/assets';
 import KnowledgeEntityNode, { type KnowledgeNodeData } from './KnowledgeEntityNode';
+import AugustineContextSync from './AugustineContextSync';
 import styles from './KnowledgeGraph.module.css';
 
 type Lens = 'all' | 'person' | 'place' | 'work' | 'concept';
@@ -82,7 +83,7 @@ function Canvas(){
   const handleNodeClick:NodeMouseHandler=(_,node)=>focus(node.id);
 
   return <div className={styles.shell}>
-    <header className={styles.universeHeader}><div><div className="eyebrow">Catholic Knowledge · Explore mode</div><h1>Đi vào thế giới của Augustinô.</h1><p>Chọn một nhân vật, địa danh, tác phẩm hoặc ý tưởng. Canvas sẽ tập trung vào thực thể đó và làm nổi bật những gì thật sự liên quan.</p></div><div className={styles.history}>{history.map((id,i)=>{const e=entities.find(x=>x.id===id);return e?<button onClick={()=>focus(id)} key={`${id}-${i}`}>{i>0&&'‹ '}{text(e.labels)}</button>:null})}</div></header>
+    <header className={styles.universeHeader}><div><div className="eyebrow">Catholic Knowledge · Explore mode</div><h1>Đi vào thế giới của Augustinô.</h1><p>Chọn một nhân vật, địa danh, tác phẩm hoặc ý tưởng. Canvas, dòng thời gian và hành trình địa lý sẽ cùng tập trung vào thực thể đó.</p></div><div className={styles.history}>{history.map((id,i)=>{const e=entities.find(x=>x.id===id);return e?<button onClick={()=>focus(id)} key={`${id}-${i}`}>{i>0&&'‹ '}{text(e.labels)}</button>:null})}</div></header>
 
     <div className={styles.toolbar}><input className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm Monica, Ambrôsiô, Tự Thuật…" aria-label="Tìm trong bản đồ"/>{([['all','Tất cả'],['person','Nhân vật'],['place','Địa danh'],['work','Tác phẩm'],['concept','Ý tưởng']] as [Lens,string][]).map(([v,l])=><button key={v} onClick={()=>setLens(v)} className={lens===v?styles.activeTool:''}>{l}</button>)}<button onClick={()=>focus('person.augustine-of-hippo')}>Về Augustinô</button><button onClick={()=>fitView({duration:450,padding:.2})}>Toàn cảnh</button></div>
 
@@ -98,9 +99,11 @@ function Canvas(){
         {selectedAsset&&<img className={styles.inspectorImage} src={selectedAsset.src} alt={selectedAsset.alt.vi??selectedAsset.alt.en}/>}<div className="eyebrow">{selected.type} · {selected.subtype}</div><h2>{text(selected.labels)}</h2><p>{selected.summary?text(selected.summary):'Khám phá thực thể này qua các mối quan hệ được mô hình hóa trong bản đồ tri thức.'}</p>
         <div className={styles.inspectorStats}><span>{selectedRelations.length} mối liên hệ</span><span>{selected.sourceRefs.length} nguồn</span></div>
         <div className={styles.relationActions}><strong>Đi tiếp từ đây</strong>{selectedRelations.map(rel=>{const otherId=rel.from===selectedId?rel.to:rel.from;const other=entities.find(e=>e.id===otherId);return other?<button key={rel.id} onClick={()=>focus(otherId)}><span>{rel.type.replaceAll('_',' ')}</span><b>{text(other.labels)} →</b></button>:null})}</div>
-        <div className={styles.inspectorFoot}><strong>Explore, không phải slideshow.</strong><p>Mỗi lựa chọn thay đổi trọng tâm của cùng một không gian tri thức thay vì đẩy bạn sang một trang tĩnh mới.</p></div>
+        <div className={styles.inspectorFoot}><strong>Một trạng thái, nhiều góc nhìn.</strong><p>Graph là trung tâm điều hướng; timeline và bản đồ bên dưới phản chiếu cùng thực thể đang được chọn.</p></div>
       </aside>
     </section>
+
+    <AugustineContextSync selectedId={selectedId} onFocus={focus}/>
   </div>;
 }
 
