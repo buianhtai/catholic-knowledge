@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import EditorialArtwork from '@/components/media/EditorialArtwork';
+import JourneyStarfield from '@/components/journey/JourneyStarfield';
 import { toExploreHref } from '@/lib/knowledge/exploration-context';
 import styles from './journey.module.css';
 
@@ -23,13 +24,14 @@ export default function JesusToNicaeaPage(){
  const [soundReady,setSoundReady]=useState(false);
  const sceneRefs=useRef<(HTMLElement|null)[]>([]);
  const soundRef=useRef<SoundEngine|null>(null);
+ const journeyProgressRef=useRef(0);
  useEffect(()=>{
    const hash=window.location.hash.replace('#','');
    const hashIndex=chapters.findIndex(chapter=>chapter.id===hash);
    if(hashIndex>=0)requestAnimationFrame(()=>sceneRefs.current[hashIndex]?.scrollIntoView({block:'start'}));
    const observer=new IntersectionObserver(entries=>{
      const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-     if(visible){const index=Number((visible.target as HTMLElement).dataset.index);if(!Number.isNaN(index))setActive(index)}
+     if(visible){const index=Number((visible.target as HTMLElement).dataset.index);if(!Number.isNaN(index)){journeyProgressRef.current=index/Math.max(1,chapters.length-1);setActive(index)}}
    },{threshold:[.35,.55,.75]});
    sceneRefs.current.forEach(el=>el&&observer.observe(el));
    return()=>observer.disconnect();
@@ -39,7 +41,7 @@ export default function JesusToNicaeaPage(){
  const jump=(index:number)=>sceneRefs.current[index]?.scrollIntoView({behavior:'smooth',block:'start'});
  const toggleSound=async()=>{if(!soundRef.current){const AudioCtx=window.AudioContext||(window as typeof window&{webkitAudioContext:typeof AudioContext}).webkitAudioContext;const ctx=new AudioCtx();const gain=ctx.createGain();const filter=ctx.createBiquadFilter();const osc=ctx.createOscillator();const harmonic=ctx.createOscillator();filter.type='lowpass';filter.frequency.value=720;gain.gain.value=0;osc.type='sine';harmonic.type='triangle';osc.frequency.value=chapters[active].tone;harmonic.frequency.value=chapters[active].tone*1.5;const harmonicGain=ctx.createGain();harmonicGain.gain.value=.13;osc.connect(filter);harmonic.connect(harmonicGain);harmonicGain.connect(filter);filter.connect(gain);gain.connect(ctx.destination);osc.start();harmonic.start();soundRef.current={ctx,gain,osc,harmonic};setSoundReady(true)}const engine=soundRef.current!;if(engine.ctx.state==='suspended')await engine.ctx.resume();const now=engine.ctx.currentTime;engine.gain.gain.cancelScheduledValues(now);const next=!soundOn;engine.gain.gain.linearRampToValueAtTime(next?.055:0,now+.8);setSoundOn(next)};
  return <main className={styles.page}>
-   <div className={styles.sky} aria-hidden="true"><div className={styles.nebula}/><div className={styles.starfield}/><div className={styles.dust}/></div>
+   <div className={styles.sky} aria-hidden="true"><div className={styles.canvasStarfield}><JourneyStarfield progressRef={journeyProgressRef}/></div><div className={styles.nebula}/><div className={styles.starfield}/><div className={styles.dust}/></div>
    <header className={styles.top}><Link href="/">☩ <span>Catholic Knowledge</span></Link><div className={styles.topActions}><button className={styles.soundToggle} onClick={toggleSound} aria-pressed={soundOn} aria-label={soundOn?'Tắt âm thanh hành trình':'Bật âm thanh hành trình'}><i className={soundOn?styles.soundLive:''}/>{soundOn?'Âm thanh: bật':soundReady?'Âm thanh: tắt':'Bật không gian âm thanh'}</button><div><span>Hành trình 01</span><b>{chapters[active].year}</b></div></div></header>
    <section className={styles.prologue}><div className={styles.prologueCopy}><span>Hành trình xuyên qua lịch sử đức tin</span><h1>Từ Chúa Giêsu<br/><em>đến Nixêa</em></h1><p>Đừng đọc lịch sử như một chuỗi ngày tháng rời rạc. Hãy bước vào mạng lưới sống động của con người, địa danh, biến cố và tư tưởng đã định hình Giáo Hội sơ khai.</p><div className={styles.prologueActions}><button onClick={()=>jump(0)}>Bắt đầu hành trình ↓</button><button className={styles.soundIntro} onClick={toggleSound}>{soundOn?'Tắt không gian âm thanh':'Bật không gian âm thanh ♫'}</button></div></div><div className={styles.origin} aria-hidden="true"><i/><b>Khởi đầu</b><span>k. 30</span></div></section>
    <div className={styles.journey}><aside className={styles.timeline} aria-label="Dòng thời gian hành trình"><span className={styles.timelineLabel}>30 → 325</span><div className={styles.timelineTrack}><i style={{height:`${(active/(chapters.length-1))*100}%`}}/></div>{chapters.map((chapter,index)=><button key={chapter.title} onClick={()=>jump(index)} className={index===active?styles.timelineActive:''}><span>{chapter.year}</span><small>{chapter.kicker}</small></button>)}</aside>
