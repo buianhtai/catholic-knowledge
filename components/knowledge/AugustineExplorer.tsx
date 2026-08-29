@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { entities, relationships, sources } from '@/data/augustine';
+import SourceBadge from '@/components/source/SourceBadge';
 import { MilestoneRibbon, RelationshipOrbit } from '@/components/visual/Infographics';
 import { text } from '@/lib/knowledge/types';
 import styles from './AugustineExplorer.module.css';
@@ -30,7 +31,7 @@ export default function AugustineExplorer(){
    {tab==='Timeline'&&<article className={styles.fullPanel}><div className="eyebrow">Life timeline</div><h2>Seven turning points</h2><MilestoneRibbon items={timeline.map(([year,detail])=>({year,title:detail.split('.')[0],detail}))}/></article>}
    {tab==='Connections'&&<article className={styles.fullPanel}><div className="eyebrow">Knowledge graph</div><h2>People, places, writings and ideas</h2><RelationshipOrbit center="Augustine" items={connected.slice(0,6).map(({edge,entity})=>({label:entity?text(entity.labels):edge.type,detail:edge.type.replaceAll('_',' ').toLowerCase()}))}/><div className={styles.relationList}>{connected.map(({edge,entity})=>entity&&<div key={edge.id}><span className={styles.icon}>{relationIcons[entity.type]}</span><p><strong>{text(entity.labels)}</strong><small>{entity.subtype}</small></p><em>{edge.type.replaceAll('_',' ')}</em></div>)}</div></article>}
    {tab==='Writings'&&<article className={styles.fullPanel}><div className="eyebrow">Featured writings</div><h2>Works in the graph</h2><div className={styles.books}>{writings.map(({entity})=>entity&&<div key={entity.id}><span>▥</span><h3>{text(entity.labels)}</h3><p>{entity.subtype}</p><b>Open work →</b></div>)}</div></article>}
-   {tab==='Sources'&&<article className={styles.fullPanel}><div className="eyebrow">Provenance</div><h2>Evidence behind the profile</h2>{sources.map(source=><div className={styles.source} key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a><span>{source.publisher} · {source.sourceType} {source.license?`· ${source.license}`:''}</span></div>)}</article>}
+   {tab==='Sources'&&<article className={styles.fullPanel}><div className="eyebrow">Provenance</div><h2>Evidence behind the profile</h2><p>Canonical entities and relationships reference known sources; generated explanations remain separate from evidence.</p><div style={{display:'flex',gap:10,flexWrap:'wrap',margin:'18px 0 24px'}}>{sources.map(source=><SourceBadge key={source.id} source={source}/>)}</div>{sources.map(source=><div className={styles.source} key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a><span>{source.publisher} · {source.sourceType} {source.license?`· ${source.license}`:''}</span></div>)}</article>}
   </section>
  </main>
 }

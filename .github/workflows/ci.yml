@@ -23,6 +23,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Knowledge validation
+        run: npm test
+
       - name: Typecheck
         run: npm run typecheck
 
