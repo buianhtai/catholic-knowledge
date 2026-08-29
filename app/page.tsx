@@ -5,96 +5,54 @@ import styles from './home.module.css';
 
 const augustine = entities.find((entity) => entity.id === 'person.augustine-of-hippo');
 const relationCount = getRelations('person.augustine-of-hippo').length;
-
 const categories = [
-  ['✦', 'Saints'], ['⌘', 'Church History'], ['✝', 'Scripture'], ['◈', 'Councils'], ['◎', 'Doctrine'], ['⌂', 'Places'],
+  ['♜','The Church','History, structure and mission'],['✦','Saints','Lives of holiness and virtue'],['▤','Scripture','Sacred Bible and interpretation'],['✥','Theology','Teachings and doctrinal truths'],['♟','Councils','Ecumenical councils and decrees'],['♕','Liturgy','Worship, sacraments and prayer'],['⌖','Places','Holy sites and pilgrimage'],['▥','Library','Documents, books and sources'],
 ];
-
-const journey = ['Jesus', 'Pentecost', 'Peter & Paul', 'Persecution', 'Constantine', 'Nicaea'];
+const topics = [['✧','The Trinity'],['☩','The Mass'],['♜','The Early Church'],['✦','Mary, Mother of God'],['♕','The Sacraments'],['◐','Heaven & Hell']];
 
 export default function HomePage() {
-  return (
-    <main className={styles.page}>
-      <section className={`container ${styles.heroGrid}`}>
-        <div className={styles.heroCopy}>
-          <div className="eyebrow">Visual Catholic knowledge atlas</div>
-          <h1>See the faith as a connected world.</h1>
-          <p>
-            Explore Scripture, saints, councils, places, writings and doctrine through sourced relationships,
-            timelines, visual stories and guided learning — with AI as a guide, never the source of truth.
-          </p>
-          <form className="search" action="/explore">
-            <input aria-label="Search Catholic Knowledge" name="q" placeholder="Search Augustine, Nicaea, Eucharist…" />
-            <button className="btn btn-primary" type="submit">Explore knowledge</button>
-          </form>
-        </div>
+  return <main className={styles.page}>
+    <section className={styles.portal}>
+      <aside className={styles.rail}>
+        <div className={styles.railBrand}><span className={styles.seal}>☩</span><strong>Catholic<br/>Knowledge</strong></div>
+        {['⌂  Home','☩  Jesus','♜  The Church','▤  Scripture','✦  Saints','♟  Councils','✥  Theology','♕  Liturgy','⌖  Places','▥  Library','❉  Kids'].map((item,index)=><Link className={index===0?styles.railActive:styles.railLink} href={index===0?'/' : '/explore'} key={item}>{item}</Link>)}
+        <blockquote>“Seek what is true, good, and beautiful. That is the heart of the Catholic intellectual tradition.”<small>— St. Augustine</small></blockquote>
+      </aside>
 
-        <aside className={styles.heroVisual} aria-label="Featured knowledge story">
-          <div className={styles.orbit} />
-          <div className={styles.portrait}>A</div>
-          <div className={styles.visualTitle}>
-            <div className="eyebrow">Featured knowledge story</div>
-            <h2>{augustine ? text(augustine.labels) : 'St. Augustine of Hippo'}</h2>
-            <p>{augustine?.summary ? text(augustine.summary) : 'A connected life through people, places, writings and ideas.'}</p>
-            <Link className="btn btn-secondary" href="/saints/augustine-of-hippo">Open visual story →</Link>
+      <div className={styles.workspace}>
+        <section className={styles.hero}>
+          <div className={styles.heroCopy}>
+            <span className="eyebrow">A visual encyclopedia of the Catholic faith</span>
+            <h1>Catholic<br/>Knowledge</h1>
+            <h2>Explore. Understand. Grow in Truth.</h2>
+            <p>A visual and trustworthy guide to Catholic faith, history and culture — connected through people, places, writings, doctrine and events.</p>
+            <form className={styles.search} action="/explore"><input name="q" aria-label="Search Catholic Knowledge" placeholder="What do you want to explore?"/><button>⌕ Search</button></form>
+            <div className={styles.popular}><b>Popular:</b><span>St. Augustine</span><span>Council of Nicaea</span><span>Sacraments</span><span>Church Fathers</span></div>
           </div>
-          <div className={styles.nodeRow}>
-            <div className={styles.node}><strong>Monica</strong><span>mother</span></div>
-            <div className={styles.node}><strong>Ambrose</strong><span>baptized by</span></div>
-            <div className={styles.node}><strong>Confessions</strong><span>wrote</span></div>
-            <div className={styles.node}><strong>{relationCount} links</strong><span>seed graph</span></div>
+          <div className={styles.heroArt}>
+            <div className={styles.arch}>♜</div><div className={styles.halo}/><div className={styles.saintPortrait}>A</div>
+            <blockquote>“Our hearts are restless until they rest in You.”<small>— St. Augustine</small></blockquote>
+            <Link href="/saints/augustine-of-hippo">Explore his story →</Link>
           </div>
-        </aside>
-      </section>
+          <aside className={styles.today}>
+            <div className={styles.todayTitle}><span>▣</span><div><strong>Today in the Church</strong><small>29 August</small></div></div>
+            <h3>Memorial of the Passion of Saint John the Baptist</h3><p>Ordinary Time · Liturgical day</p>
+            <div className={styles.todayTools}>{[['▤','Mass Readings'],['✦','Saint of the Day'],['♕','Prayer'],['▥','Liturgy Guide']].map(([i,l])=><div key={l}><b>{i}</b><span>{l}</span></div>)}</div>
+            <button>View Full Liturgy →</button>
+          </aside>
+        </section>
 
-      <section className="container section">
-        <div className={styles.quickGrid}>
-          <article className={`${styles.panel} ${styles.today}`}>
-            <div className={styles.calendar}>29</div>
-            <div>
-              <div className="eyebrow">Today in the Church</div>
-              <h3>Enter through the liturgical day</h3>
-              <p>Readings, feast, saint, season and related people or places become entry points into the wider graph.</p>
-            </div>
-          </article>
-          <Link className={styles.panel} href="/explore">
-            <div className="eyebrow">Explore</div><h3>Follow connections</h3>
-            <p>Trace people, places, writings and ideas through an interactive knowledge map.</p>
-          </Link>
-          <Link className={styles.panel} href="/learn/jesus-to-nicaea">
-            <div className="eyebrow">Learn</div><h3>Guided journeys</h3>
-            <p>Move through history as a visual sequence rather than a wall of text.</p>
-          </Link>
-        </div>
-      </section>
+        <section className={styles.categorySection}><div className={styles.sectionTitle}><h2>Explore the Catholic World</h2><Link href="/explore">View all categories →</Link></div><div className={styles.categoryGrid}>{categories.map(([icon,title,body])=><Link href="/explore" className={styles.category} key={title}><b>{icon}</b><div><strong>{title}</strong><small>{body}</small><em>Explore →</em></div></Link>)}</div></section>
 
-      <section className="container section">
-        <div className="section-heading">
-          <div><div className="eyebrow">Explore by lens</div><h2>One world, many ways in.</h2></div>
-          <p>The same canonical knowledge powers category browsing, graph views, timelines, stories and grounded explanations.</p>
-        </div>
-        <div className={styles.categoryGrid}>
-          {categories.map(([icon, label]) => (
-            <Link href="/explore" className={styles.category} key={label}>
-              <span className={styles.categoryIcon}>{icon}</span><strong>{label}</strong>
-            </Link>
-          ))}
-        </div>
-      </section>
+        <section className={styles.dashboard}>
+          <article className={styles.featureCard}><span className="eyebrow">Featured · St. Augustine of Hippo</span><h2>{augustine?text(augustine.labels):'St. Augustine of Hippo'}</h2><p>Bishop, Doctor of the Church, and one of the most influential thinkers in Christian tradition.</p><div className={styles.stats}><span><b>354–430</b>Years</span><span><b>2</b>Featured writings</span><span><b>{relationCount}</b>Connections</span></div><Link href="/saints/augustine-of-hippo">Explore His Life →</Link></article>
+          <Link href="/explore" className={styles.mapCard}><div className={styles.cardHead}><h2>Visual Knowledge Map</h2><span>Interactive</span></div><div className={styles.miniGraph}><i>Grace</i><i>God</i><strong>A</strong><i>Monica</i><i>Confessions</i><i>Church</i></div><b>Explore Full Graph →</b></Link>
+          <Link href="/timeline" className={styles.timelineCard}><h2>Church History Timeline</h2><p>Key moments</p><div className={styles.miniTimeline}>{[['33','Pentecost'],['313','Milan'],['325','Nicaea'],['354','Augustine'],['430','Hippo']].map(([y,l])=><span key={y}><b>{y}</b><small>{l}</small></span>)}</div><b>Explore Timeline →</b></Link>
+          <Link href="/learn/jesus-to-nicaea" className={styles.learnCard}><span className="eyebrow">Learning Journey</span><h2>Jesus to Nicaea</h2><div className={styles.jesus}>☩</div><p>Follow the essential journey of our faith in 6 steps.</p><div className={styles.progress}><i/></div><b>Continue Journey →</b></Link>
+        </section>
 
-      <section className="container section">
-        <div className={styles.journey}>
-          <div>
-            <div className="eyebrow">Featured learning journey</div>
-            <h2 style={{fontFamily:'Georgia, serif', fontSize:38, margin:'10px 0'}}>From Jesus to Nicaea</h2>
-            <p style={{color:'var(--ck-muted)', lineHeight:1.65}}>Follow six milestones to understand how the early Church spread, faced persecution and articulated the Nicene faith.</p>
-            <Link className="btn btn-primary" href="/learn/jesus-to-nicaea">Start journey →</Link>
-          </div>
-          <div className={styles.path}>
-            {journey.map((item, index) => <div className={styles.step} key={item}><div className={styles.dot}>{index + 1}</div><span>{item}</span></div>)}
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+        <section className={styles.bottomGrid}><div className={styles.topics}><h2>Topics You Might Explore</h2><div>{topics.map(([icon,label])=><Link href="/explore" key={label}><b>{icon}</b><span>{label}</span></Link>)}</div></div><aside className={styles.library}><h2>From the Library</h2><div><span className={styles.book}>▥</span><p><b>Confessions</b><small>St. Augustine</small><em>The restless heart and the mercy of God.</em></p></div></aside></section>
+      </div>
+    </section>
+  </main>;
 }
