@@ -1,49 +1,18 @@
 import Link from 'next/link';
 
-const milestones = [
-  { year: '30s', title: 'The apostolic Church', era: 'Origins', body: 'The first Christian communities form around the witness to Jesus, the apostles, prayer, teaching and the breaking of bread.' },
-  { year: '325', title: 'Council of Nicaea', era: 'Imperial Christianity', body: 'Bishops gather at Nicaea and confess the Son as true God from true God, shaping the Nicene faith.' },
-  { year: '1054', title: 'East–West rupture', era: 'Medieval Church', body: 'Long-standing theological, political and ecclesial tensions harden into a major rupture between Rome and Constantinople.' },
-  { year: '1545', title: 'Council of Trent', era: 'Reformation era', body: 'The Catholic Church responds to the Reformation with doctrinal clarification and major reforms in formation and discipline.' },
-  { year: '1962', title: 'Second Vatican Council', era: 'Modern Church', body: 'Vatican II renews the Church’s engagement with Scripture, liturgy, ecumenism and the modern world.' },
-  { year: 'Today', title: 'A global Catholic Church', era: 'Contemporary', body: 'Catholic life spans cultures and continents while remaining connected through worship, teaching, memory and mission.' },
+const milestones=[
+ {year:'30s',title:'The apostolic Church',era:'Origins',body:'The first Christian communities form around the witness to Jesus, the apostles, prayer, teaching and the breaking of bread.'},
+ {year:'325',title:'Council of Nicaea',era:'Imperial Christianity',body:'Bishops gather at Nicaea and confess the Son as true God from true God, shaping the Nicene faith.'},
+ {year:'1054',title:'East–West rupture',era:'Medieval Church',body:'Long-standing theological, political and ecclesial tensions harden into a major rupture between Rome and Constantinople.'},
+ {year:'1545',title:'Council of Trent',era:'Reformation era',body:'The Catholic Church responds to the Reformation with doctrinal clarification and major reforms in formation and discipline.'},
+ {year:'1962',title:'Second Vatican Council',era:'Modern Church',body:'Vatican II renews the Church’s engagement with Scripture, liturgy, ecumenism and the modern world.'},
+ {year:'Today',title:'A global Catholic Church',era:'Contemporary',body:'Catholic life spans cultures and continents while remaining connected through worship, teaching, memory and mission.'},
 ];
 
-export default function TimelinePage() {
-  return (
-    <main className="container section">
-      <div className="eyebrow">Church History</div>
-      <div className="section-heading" style={{ alignItems: 'start', marginTop: 12 }}>
-        <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(46px, 7vw, 82px)', lineHeight: .98, margin: 0 }}>Two thousand years, visually connected.</h1>
-        </div>
-        <p>Move through turning points, then jump from an event into the people, places, documents and doctrines around it.</p>
-      </div>
-
-      <section style={{ marginTop: 38, display: 'grid', gap: 18 }}>
-        {milestones.map((item, index) => (
-          <article className="card" key={item.year} style={{ display: 'grid', gridTemplateColumns: '120px 1fr auto', gap: 24, alignItems: 'center' }}>
-            <div>
-              <div className="card-kicker">{item.era}</div>
-              <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 34, marginTop: 7 }}>{item.year}</strong>
-            </div>
-            <div>
-              <h2 style={{ margin: '0 0 8px', fontSize: 24 }}>{item.title}</h2>
-              <p style={{ margin: 0, color: 'var(--ck-muted)', lineHeight: 1.65 }}>{item.body}</p>
-            </div>
-            <div style={{ minWidth: 120, textAlign: 'right', color: 'var(--ck-gold)', fontWeight: 800 }}>0{index + 1}</div>
-          </article>
-        ))}
-      </section>
-
-      <section className="card" style={{ marginTop: 22, background: 'var(--ck-ink)', color: '#fff', display: 'flex', justifyContent: 'space-between', gap: 24, alignItems: 'center' }}>
-        <div>
-          <div className="eyebrow">Guided story</div>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 32, margin: '10px 0' }}>Start with the early Church.</h2>
-          <p style={{ color: 'rgba(255,255,255,.7)', margin: 0 }}>Follow the journey from Jesus and the apostles to the Council of Nicaea.</p>
-        </div>
-        <Link className="btn btn-secondary" href="/learn/jesus-to-nicaea">Begin journey →</Link>
-      </section>
-    </main>
-  );
-}
+export default function TimelinePage(){return <main style={{background:'#f7f1e7',minHeight:'100vh',padding:'44px 0 80px'}}><div className="container">
+ <div className="eyebrow">Church History · Visual Atlas</div>
+ <div style={{display:'grid',gridTemplateColumns:'1.15fr .85fr',gap:28,alignItems:'end',marginTop:10}}><h1 style={{fontFamily:'Georgia,serif',fontSize:'clamp(48px,7vw,82px)',lineHeight:.95,margin:0,color:'#0b2848',letterSpacing:'-.04em'}}>Two thousand years,<br/>visually connected.</h1><p style={{fontFamily:'Georgia,serif',lineHeight:1.7,color:'#66717b',margin:0}}>Move through turning points, then jump from an event into the people, places, documents and doctrines around it.</p></div>
+ <section style={{marginTop:42,background:'#0a2847',borderRadius:18,padding:'24px 20px',color:'#fff',overflow:'hidden'}}><div style={{display:'grid',gridTemplateColumns:`repeat(${milestones.length},1fr)`,gap:0,position:'relative'}}>{milestones.map((m,i)=><div key={m.year} style={{position:'relative',padding:'0 12px 16px',textAlign:'center'}}><div style={{font:'12px Georgia,serif',color:'#d5b16b'}}>{m.year}</div><div style={{width:12,height:12,borderRadius:'50%',background:'#d1a04a',margin:'12px auto',position:'relative',zIndex:2}}/><strong style={{font:'13px Georgia,serif'}}>{m.title}</strong>{i<milestones.length-1&&<span style={{position:'absolute',height:1,background:'rgba(255,255,255,.22)',left:'50%',right:'-50%',top:36}}/>}</div>)}</div></section>
+ <section style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:14,marginTop:16}}>{milestones.map((item,index)=><article key={item.year} style={{display:'grid',gridTemplateColumns:'88px 1fr',gap:18,background:'#fffaf1',border:'1px solid #dfd1ba',borderRadius:14,padding:18,boxShadow:'0 8px 24px rgba(48,35,18,.05)'}}><div><div style={{fontSize:10,textTransform:'uppercase',letterSpacing:'.08em',color:'#b17d2d',fontWeight:800}}>{item.era}</div><strong style={{display:'block',font:'30px Georgia,serif',color:'#0b2848',marginTop:6}}>{item.year}</strong><span style={{fontSize:10,color:'#9a8d78'}}>0{index+1}</span></div><div><h2 style={{font:'23px Georgia,serif',margin:'0 0 8px',color:'#122d4b'}}>{item.title}</h2><p style={{margin:0,color:'#68717a',lineHeight:1.65,fontFamily:'Georgia,serif',fontSize:14}}>{item.body}</p></div></article>)}</section>
+ <section style={{marginTop:18,border:'1px solid #d8c9b0',borderRadius:14,background:'linear-gradient(135deg,#efe2ca,#fff8eb)',padding:22,display:'flex',justifyContent:'space-between',alignItems:'center',gap:20}}><div><div className="eyebrow">Guided Story</div><h2 style={{font:'30px Georgia,serif',margin:'8px 0',color:'#0b2848'}}>Start with the Early Church.</h2><p style={{margin:0,color:'#69717a'}}>Follow Jesus, the apostles, persecution, Constantine and the Council of Nicaea.</p></div><Link className="btn btn-primary" href="/learn/jesus-to-nicaea">Begin journey →</Link></section>
+ </div></main>}
