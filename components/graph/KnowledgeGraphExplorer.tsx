@@ -1,7 +1,15 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import ReactFlow, { Background, Controls, MarkerType, type Edge, type Node } from '@xyflow/react';
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MarkerType,
+  type Edge,
+  type Node,
+  type NodeMouseHandler,
+} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { entities, relationships } from '@/data/augustine';
 import { text } from '@/lib/knowledge/types';
@@ -71,6 +79,8 @@ export default function KnowledgeGraphExplorer() {
     setSelectedId(story[next]);
   };
 
+  const handleNodeClick: NodeMouseHandler = (_, node) => setSelectedId(node.id);
+
   return (
     <div className={`container ${styles.page}`}>
       <header className={styles.header}>
@@ -94,7 +104,7 @@ export default function KnowledgeGraphExplorer() {
         </aside>
 
         <div className={`${styles.panel} ${styles.canvas}`}>
-          <ReactFlow nodes={nodes} edges={edges} fitView minZoom={0.45} maxZoom={1.5} onNodeClick={(_, node) => setSelectedId(node.id)} proOptions={{ hideAttribution: true }}>
+          <ReactFlow nodes={nodes} edges={edges} fitView minZoom={0.45} maxZoom={1.5} onNodeClick={handleNodeClick} proOptions={{ hideAttribution: true }}>
             <Background gap={28} size={1} />
             <Controls showInteractive={false} />
           </ReactFlow>
