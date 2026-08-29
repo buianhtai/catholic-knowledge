@@ -1,5 +1,7 @@
 import type { KnowledgeEntity, KnowledgeRelationship, Source } from '@/lib/knowledge/types';
 
+const retrievedAt = '2026-08-29';
+
 export const sources: Source[] = [
   {
     id: 'source.wikidata.augustine',
@@ -9,6 +11,7 @@ export const sources: Source[] = [
     sourceType: 'dataset',
     license: 'CC0',
     language: 'en',
+    retrievedAt,
   },
   {
     id: 'source.britannica.augustine',
@@ -17,10 +20,13 @@ export const sources: Source[] = [
     url: 'https://www.britannica.com/biography/Saint-Augustine',
     sourceType: 'secondary',
     language: 'en',
+    retrievedAt,
   },
 ];
 
-const verified = [{ sourceId: 'source.wikidata.augustine', status: 'reviewed' as const }];
+// Seed data is structurally source-backed but still requires source-specific editorial review.
+// Do not silently promote these references to `reviewed`/`verified` until the exact claim locator is checked.
+const seedRefs = [{ sourceId: 'source.wikidata.augustine', status: 'unreviewed' as const, retrievedAt }];
 
 export const entities: KnowledgeEntity[] = [
   {
@@ -34,7 +40,7 @@ export const entities: KnowledgeEntity[] = [
       vi: 'Giám mục, nhà thần học và tác giả có các tác phẩm ảnh hưởng sâu rộng đến Kitô giáo Tây phương.',
     },
     dates: { start: '0354-11-13', end: '0430-08-28', display: { en: '354–430', vi: '354–430' } },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'person.monica',
@@ -43,7 +49,7 @@ export const entities: KnowledgeEntity[] = [
     slug: 'monica',
     labels: { en: 'St. Monica', vi: 'Thánh Monica' },
     summary: { en: 'Mother of Augustine, remembered for her perseverance in prayer.', vi: 'Mẹ của Augustinô, được nhớ đến vì sự kiên trì cầu nguyện.' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'person.ambrose-of-milan',
@@ -51,7 +57,7 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'Saint/Bishop',
     slug: 'ambrose-of-milan',
     labels: { en: 'St. Ambrose of Milan', vi: 'Thánh Ambrôsiô thành Milan' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'place.tagaste',
@@ -59,7 +65,7 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'City',
     slug: 'tagaste',
     labels: { en: 'Tagaste', vi: 'Tagaste' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'place.hippo-regius',
@@ -67,7 +73,7 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'City/See',
     slug: 'hippo-regius',
     labels: { en: 'Hippo Regius', vi: 'Hippo Regius' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'work.confessions',
@@ -75,7 +81,7 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'Book',
     slug: 'confessions',
     labels: { en: 'Confessions', vi: 'Tự Thuật' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'work.city-of-god',
@@ -83,7 +89,7 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'Book',
     slug: 'city-of-god',
     labels: { en: 'The City of God', vi: 'Thành Đô Thiên Chúa' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
   {
     id: 'concept.grace',
@@ -91,18 +97,18 @@ export const entities: KnowledgeEntity[] = [
     subtype: 'TheologyConcept',
     slug: 'grace',
     labels: { en: 'Grace', vi: 'Ân sủng' },
-    sourceRefs: verified,
+    sourceRefs: seedRefs,
   },
 ];
 
 export const relationships: KnowledgeRelationship[] = [
-  { id: 'rel.monica-augustine', type: 'MOTHER_OF', from: 'person.monica', to: 'person.augustine-of-hippo', sourceRefs: verified },
-  { id: 'rel.augustine-baptized-ambrose', type: 'BAPTIZED_BY', from: 'person.augustine-of-hippo', to: 'person.ambrose-of-milan', sourceRefs: verified },
-  { id: 'rel.augustine-tagaste', type: 'BORN_IN', from: 'person.augustine-of-hippo', to: 'place.tagaste', sourceRefs: verified },
-  { id: 'rel.augustine-hippo', type: 'BISHOP_OF', from: 'person.augustine-of-hippo', to: 'place.hippo-regius', sourceRefs: verified },
-  { id: 'rel.augustine-confessions', type: 'WROTE', from: 'person.augustine-of-hippo', to: 'work.confessions', sourceRefs: verified },
-  { id: 'rel.augustine-city-of-god', type: 'WROTE', from: 'person.augustine-of-hippo', to: 'work.city-of-god', sourceRefs: verified },
-  { id: 'rel.augustine-grace', type: 'RELATED_TO', from: 'person.augustine-of-hippo', to: 'concept.grace', sourceRefs: verified },
+  { id: 'rel.monica-augustine', type: 'MOTHER_OF', from: 'person.monica', to: 'person.augustine-of-hippo', sourceRefs: seedRefs },
+  { id: 'rel.augustine-baptized-ambrose', type: 'BAPTIZED_BY', from: 'person.augustine-of-hippo', to: 'person.ambrose-of-milan', sourceRefs: seedRefs },
+  { id: 'rel.augustine-tagaste', type: 'BORN_IN', from: 'person.augustine-of-hippo', to: 'place.tagaste', sourceRefs: seedRefs },
+  { id: 'rel.augustine-hippo', type: 'BISHOP_OF', from: 'person.augustine-of-hippo', to: 'place.hippo-regius', sourceRefs: seedRefs },
+  { id: 'rel.augustine-confessions', type: 'WROTE', from: 'person.augustine-of-hippo', to: 'work.confessions', sourceRefs: seedRefs },
+  { id: 'rel.augustine-city-of-god', type: 'WROTE', from: 'person.augustine-of-hippo', to: 'work.city-of-god', sourceRefs: seedRefs },
+  { id: 'rel.augustine-grace', type: 'RELATED_TO', from: 'person.augustine-of-hippo', to: 'concept.grace', sourceRefs: seedRefs },
 ];
 
 export const getEntity = (id: string) => entities.find((entity) => entity.id === id);
