@@ -2,60 +2,18 @@
 
 import { useState } from 'react';
 
-const steps = [
-  ['Jesus and the apostles', 'The story begins with Jesus, his proclamation of the Kingdom, and the disciples who become witnesses.'],
-  ['Pentecost', 'The disciples proclaim the Gospel publicly and the Church’s missionary life accelerates.'],
-  ['Peter, Paul and mission', 'Christian communities spread through the Mediterranean world and face new pastoral questions.'],
-  ['Persecution and growth', 'Martyrdom, apologetics and local communities shape Christian identity across the Roman Empire.'],
-  ['Constantine and a changing world', 'Imperial toleration changes the Church’s public situation and makes large councils possible.'],
-  ['Council of Nicaea', 'Bishops gather in 325 to address the Arian controversy and articulate the Church’s confession of Christ.'],
+const steps=[
+ ['Jesus and the apostles','The story begins with Jesus, his proclamation of the Kingdom, and the disciples who become witnesses.','☩'],
+ ['Pentecost','The disciples proclaim the Gospel publicly and the Church’s missionary life accelerates.','✦'],
+ ['Peter, Paul and mission','Christian communities spread through the Mediterranean world and face new pastoral questions.','⌖'],
+ ['Persecution and growth','Martyrdom, apologetics and local communities shape Christian identity across the Roman Empire.','✧'],
+ ['Constantine and a changing world','Imperial toleration changes the Church’s public situation and makes large councils possible.','♜'],
+ ['Council of Nicaea','Bishops gather in 325 to address the Arian controversy and articulate the Church’s confession of Christ.','♟'],
 ] as const;
 
-export default function JesusToNicaeaPage() {
-  const [active, setActive] = useState(0);
-  const progress = ((active + 1) / steps.length) * 100;
-
-  return (
-    <main className="container section">
-      <div className="eyebrow">Guided learning journey</div>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(48px, 7vw, 84px)', lineHeight: .98, margin: '12px 0 16px' }}>From Jesus to Nicaea</h1>
-      <p style={{ maxWidth: 760, color: 'var(--ck-muted)', fontSize: 18, lineHeight: 1.7 }}>Six visual milestones that connect people, events and ideas instead of treating Church history as isolated dates.</p>
-
-      <div style={{ margin: '28px 0 34px' }}>
-        <div style={{ height: 8, borderRadius: 999, background: 'var(--ck-surface-strong)', overflow: 'hidden' }}>
-          <div style={{ width: `${progress}%`, height: '100%', background: 'var(--ck-gold)', transition: 'width .25s ease' }} />
-        </div>
-        <div style={{ marginTop: 8, color: 'var(--ck-muted)', fontSize: 13 }}>Part {active + 1} of {steps.length}</div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .7fr) minmax(0, 1.3fr)', gap: 22 }}>
-        <nav className="card" aria-label="Journey steps" style={{ display: 'grid', gap: 8, alignContent: 'start' }}>
-          {steps.map(([title], index) => (
-            <button key={title} onClick={() => setActive(index)} style={{ textAlign: 'left', border: 0, borderRadius: 14, padding: '14px 16px', cursor: 'pointer', background: active === index ? 'var(--ck-ink)' : 'transparent', color: active === index ? '#fff' : 'var(--ck-ink)', fontWeight: 800 }}>
-              <span style={{ color: active === index ? 'var(--ck-gold)' : 'var(--ck-muted)', marginRight: 10 }}>0{index + 1}</span>{title}
-            </button>
-          ))}
-        </nav>
-
-        <article className="hero-card" style={{ minHeight: 460 }}>
-          <div>
-            <div className="eyebrow">Milestone {active + 1}</div>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 48, lineHeight: 1.05, margin: '18px 0' }}>{steps[active][0]}</h2>
-            <p style={{ color: 'rgba(255,255,255,.75)', fontSize: 18, lineHeight: 1.7 }}>{steps[active][1]}</p>
-          </div>
-          <div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <span className="btn btn-secondary">People</span>
-              <span className="btn btn-secondary">Events</span>
-              <span className="btn btn-secondary">Sources</span>
-            </div>
-            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-              <button className="btn btn-secondary" disabled={active === 0} onClick={() => setActive((v) => Math.max(0, v - 1))}>← Previous</button>
-              <button className="btn btn-secondary" disabled={active === steps.length - 1} onClick={() => setActive((v) => Math.min(steps.length - 1, v + 1))}>Next →</button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </main>
-  );
-}
+export default function JesusToNicaeaPage(){const[active,setActive]=useState(0);const progress=((active+1)/steps.length)*100;return <main style={{background:'#f7f1e7',minHeight:'100vh',padding:'40px 0 80px'}}><div className="container">
+ <div className="eyebrow">Guided Learning Journey · Early Church</div><h1 style={{font:'clamp(50px,7vw,86px)/.94 Georgia,serif',letterSpacing:'-.04em',margin:'10px 0 14px',color:'#0b2848'}}>From Jesus to Nicaea</h1><p style={{maxWidth:760,color:'#69727b',font:'17px/1.7 Georgia,serif'}}>Six visual milestones connect people, events, places and ideas instead of treating Church history as isolated dates.</p>
+ <section style={{display:'grid',gridTemplateColumns:'280px 1fr',gap:16,marginTop:28}}>
+  <nav style={{background:'#0a2847',borderRadius:16,padding:16,color:'#fff',boxShadow:'0 12px 30px rgba(20,33,58,.14)'}}>{steps.map(([title,,icon],index)=><button key={title} onClick={()=>setActive(index)} style={{width:'100%',display:'grid',gridTemplateColumns:'34px 1fr',gap:10,alignItems:'center',textAlign:'left',border:0,borderRadius:9,padding:'11px 10px',cursor:'pointer',background:active===index?'rgba(255,255,255,.13)':'transparent',color:'#fff',borderLeft:active===index?'3px solid #d1a04a':'3px solid transparent'}}><span style={{fontSize:18,color:'#d9b267'}}>{icon}</span><span><small style={{display:'block',color:'#aebbc7'}}>0{index+1}</small><strong style={{font:'13px Georgia,serif'}}>{title}</strong></span></button>)}</nav>
+  <article style={{minHeight:500,border:'1px solid #dfd1ba',borderRadius:16,background:'linear-gradient(135deg,#fffaf1,#f1e5d0)',padding:26,position:'relative',overflow:'hidden'}}><div style={{position:'absolute',right:-40,top:-40,width:240,height:240,border:'1px solid #d2a34f',borderRadius:'50%',boxShadow:'0 0 0 40px rgba(182,134,53,.07),0 0 0 80px rgba(182,134,53,.04)'}}/><div style={{position:'relative',zIndex:2,maxWidth:720}}><div className="eyebrow">Milestone {active+1} · Part {active+1} of {steps.length}</div><div style={{fontSize:72,color:'#b27f2e',margin:'30px 0 8px'}}>{steps[active][2]}</div><h2 style={{font:'48px/1.02 Georgia,serif',color:'#0b2848',margin:'0 0 16px'}}>{steps[active][0]}</h2><p style={{font:'18px/1.75 Georgia,serif',color:'#626d77',maxWidth:680}}>{steps[active][1]}</p><div style={{display:'flex',gap:8,flexWrap:'wrap',marginTop:22}}>{['People','Events','Places','Sources'].map(x=><span key={x} style={{border:'1px solid #dacbb2',background:'#fffaf1',borderRadius:999,padding:'7px 10px',fontSize:11}}>{x}</span>)}</div></div><div style={{position:'absolute',left:26,right:26,bottom:24}}><div style={{height:6,background:'#e1d5c3',borderRadius:99,overflow:'hidden'}}><div style={{width:`${progress}%`,height:'100%',background:'#b68435',transition:'width .25s'}}/></div><div style={{display:'flex',justifyContent:'space-between',marginTop:14}}><button className="btn btn-secondary" disabled={active===0} onClick={()=>setActive(v=>Math.max(0,v-1))}>← Previous</button><button className="btn btn-primary" disabled={active===steps.length-1} onClick={()=>setActive(v=>Math.min(steps.length-1,v+1))}>Next →</button></div></div></article>
+ </section></div></main>}
