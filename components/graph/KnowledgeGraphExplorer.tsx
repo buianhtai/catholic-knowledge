@@ -84,8 +84,8 @@ export default function KnowledgeGraphExplorer() {
   return (
     <div className={`container ${styles.page}`}>
       <header className={styles.header}>
-        <div><div className="eyebrow">Interactive knowledge graph</div><h1>Explore Augustine's world.</h1></div>
-        <p>Filter by semantic lens, inspect relationships, search the focused graph, or play a guided story through Augustine's life.</p>
+        <div><div className="eyebrow">Interactive knowledge graph</div><h1>Explore Augustine’s world.</h1></div>
+        <p>Filter by semantic lens, inspect relationships, search the focused graph, or play a guided story through Augustine’s life.</p>
       </header>
       <div className={styles.toolbar}>
         <input className={styles.search} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find Monica, Confessions, Grace…" aria-label="Search graph" />
