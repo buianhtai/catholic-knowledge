@@ -47,7 +47,6 @@ function Canvas(){
   const [lens,setLens]=useState<Lens>('all');
   const [query,setQuery]=useState('');
   const [selectedId,setSelectedId]=useState('person.augustine-of-hippo');
-  const [expanded,setExpanded]=useState<Set<string>>(()=>new Set(['person.augustine-of-hippo']));
   const [history,setHistory]=useState<string[]>(['person.augustine-of-hippo']);
   const { fitView } = useReactFlow();
 
@@ -56,7 +55,6 @@ function Canvas(){
 
   const focus = useCallback((id:string)=>{
     setSelectedId(id);
-    setExpanded(prev=>new Set(prev).add(id));
     setHistory(prev=>prev.at(-1)===id?prev:[...prev,id].slice(-6));
     requestAnimationFrame(()=>fitView({nodes:[{id}],duration:500,maxZoom:1.15,padding:.7}));
   },[fitView]);
@@ -82,12 +80,11 @@ function Canvas(){
   const selected=entities.find(e=>e.id===selectedId)??entities[0];
   const selectedAsset=assets[selected.id]?getEditorialAsset(assets[selected.id]):undefined;
   const handleNodeClick:NodeMouseHandler=(_,node)=>focus(node.id);
-  const expandAll=()=>setExpanded(new Set(entities.map(e=>e.id)));
 
   return <div className={styles.shell}>
     <header className={styles.universeHeader}><div><div className="eyebrow">Catholic Knowledge · Explore mode</div><h1>Đi vào thế giới của Augustinô.</h1><p>Chọn một nhân vật, địa danh, tác phẩm hoặc ý tưởng. Canvas sẽ tập trung vào thực thể đó và làm nổi bật những gì thật sự liên quan.</p></div><div className={styles.history}>{history.map((id,i)=>{const e=entities.find(x=>x.id===id);return e?<button onClick={()=>focus(id)} key={`${id}-${i}`}>{i>0&&'‹ '}{text(e.labels)}</button>:null})}</div></header>
 
-    <div className={styles.toolbar}><input className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm Monica, Ambrôsiô, Tự Thuật…" aria-label="Tìm trong bản đồ"/>{([['all','Tất cả'],['person','Nhân vật'],['place','Địa danh'],['work','Tác phẩm'],['concept','Ý tưởng']] as [Lens,string][]).map(([v,l])=><button key={v} onClick={()=>setLens(v)} className={lens===v?styles.activeTool:''}>{l}</button>)}<button onClick={expandAll}>Mở toàn bộ</button><button onClick={()=>fitView({duration:450,padding:.2})}>Toàn cảnh</button></div>
+    <div className={styles.toolbar}><input className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm Monica, Ambrôsiô, Tự Thuật…" aria-label="Tìm trong bản đồ"/>{([['all','Tất cả'],['person','Nhân vật'],['place','Địa danh'],['work','Tác phẩm'],['concept','Ý tưởng']] as [Lens,string][]).map(([v,l])=><button key={v} onClick={()=>setLens(v)} className={lens===v?styles.activeTool:''}>{l}</button>)}<button onClick={()=>focus('person.augustine-of-hippo')}>Về Augustinô</button><button onClick={()=>fitView({duration:450,padding:.2})}>Toàn cảnh</button></div>
 
     <section className={styles.interactiveWorkspace}>
       <div className={styles.interactiveCanvas}>
