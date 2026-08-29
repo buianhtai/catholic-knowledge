@@ -7,12 +7,12 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import styles from './home.module.css';
 
 const viCategories = [
-  ['art.gutenberg-bible','Kinh Thánh','Khám phá sách, nhân vật, địa danh và chủ đề','/kinh-thanh'],
+  ['art.gutenberg-bible','Kinh Thánh','Khám phá các sách, nhân vật, địa danh và chủ đề','/kinh-thanh'],
   ['art.augustine-philippe-de-champaigne','Các Thánh','Cuộc đời, chứng tá và linh đạo','/cac-thanh/augustino-thanh-hippo'],
-  ['art.nicaea-icon','Lịch sử Giáo Hội','Các biến cố, công đồng và bước ngoặt lớn','/lich-su-giao-hoi'],
+  ['art.nicaea-icon','Lịch sử Giáo Hội','Các biến cố, công đồng và những bước ngoặt lớn','/lich-su-giao-hoi'],
   ['art.rublev-trinity','Giáo lý','Các mầu nhiệm đức tin và mối liên hệ thần học','/giao-ly'],
-  ['art.mass-at-bolsena','Phụng vụ','Thánh lễ, bí tích và đời sống cầu nguyện','/phung-vu'],
-  ['place.la-vang','Công giáo Việt Nam','La Vang, các thánh tử đạo và lịch sử địa phương','/dia-diem'],
+  ['art.mass-at-bolsena','Phụng vụ','Thánh lễ, các bí tích và đời sống cầu nguyện','/phung-vu'],
+  ['place.la-vang-shrine','Công giáo Việt Nam','La Vang, các Thánh Tử đạo Việt Nam và lịch sử Giáo Hội tại Việt Nam','/dia-diem'],
 ] as const;
 
 const enCategories = [
@@ -21,7 +21,7 @@ const enCategories = [
   ['art.nicaea-icon','Church History','Events, councils and major turning points','/timeline'],
   ['art.rublev-trinity','Doctrine','Mysteries of faith and theological connections','/doctrine'],
   ['art.mass-at-bolsena','Liturgy','Mass, sacraments and prayer','/liturgy'],
-  ['place.la-vang','Catholic Vietnam','La Vang, martyrs and local Church history','/places'],
+  ['place.la-vang-shrine','Catholic Vietnam','La Vang, martyrs and local Church history','/places'],
 ] as const;
 
 export default function HomePage() {
@@ -35,7 +35,7 @@ export default function HomePage() {
       <div className={styles.heroCopy}>
         <span className="eyebrow">{vi?'Bách khoa trực quan về đức tin Công giáo':'A visual encyclopedia of the Catholic faith'}</span>
         <h1>{vi?'Khám phá đức tin như một thế giới được kết nối.':'Explore the faith as a connected world.'}</h1>
-        <p>{vi?'Con người, Kinh Thánh, lịch sử, giáo lý, phụng vụ và địa danh được liên kết bằng nguồn tư liệu rõ ràng — để bạn không chỉ đọc, mà còn nhìn thấy bức tranh toàn cảnh.':'People, Scripture, history, doctrine, liturgy and places connected through clear sources so you can see the bigger picture, not just read isolated pages.'}</p>
+        <p>{vi?'Con người, Kinh Thánh, lịch sử, giáo lý, phụng vụ và các địa danh được kết nối bằng những nguồn tư liệu rõ ràng — để bạn không chỉ đọc từng câu chuyện riêng lẻ mà còn thấy được bức tranh toàn cảnh.':'People, Scripture, history, doctrine, liturgy and places connected through clear sources so you can see the bigger picture, not just read isolated pages.'}</p>
         <form className={styles.search} action={href('/kham-pha','/explore')}>
           <input name="q" aria-label={vi?'Tìm kiếm Catholic Knowledge':'Search Catholic Knowledge'} placeholder={vi?'Bạn muốn tìm hiểu điều gì?':'What do you want to explore?'}/>
           <button>{vi?'Tìm kiếm':'Search'}</button>
@@ -59,7 +59,7 @@ export default function HomePage() {
     </section>
 
     <section className={styles.todayStrip}>
-      <div><span className="eyebrow">{vi?'Hôm nay trong Giáo Hội':'Today in the Church'}</span><strong>{vi?'29 tháng 8 · Thánh Gioan Tẩy Giả':'29 August · Saint John the Baptist'}</strong><p>{vi?'Mở ngày phụng vụ để xem bài đọc, vị thánh, mùa phụng vụ và các mối liên hệ trong bản đồ tri thức.':'Open the liturgical day to see readings, saint, season and related knowledge.'}</p></div>
+      <div><span className="eyebrow">{vi?'Hôm nay trong Giáo Hội':'Today in the Church'}</span><strong>{vi?'29 tháng 8 · Thánh Gioan Tẩy Giả bị trảm quyết':'29 August · Saint John the Baptist'}</strong><p>{vi?'Xem ngày phụng vụ hôm nay để đọc các bài đọc, tìm hiểu vị thánh được kính nhớ, mùa phụng vụ và những mối liên hệ trong bản đồ tri thức.':'Open the liturgical day to see readings, saint, season and related knowledge.'}</p></div>
       <Link className="btn btn-primary" href={href('/phung-vu','/liturgy')}>{vi?'Xem phụng vụ hôm nay →':'View today’s liturgy →'}</Link>
     </section>
 
@@ -70,20 +70,20 @@ export default function HomePage() {
 
     <section className={styles.storyGrid}>
       <article className={styles.featureStory}>
-        <div className={styles.storyImage}><EditorialArtwork assetId="place.la-vang" height={360} radius={22}/></div>
-        <div><span className="eyebrow">{vi?'Góc nhìn Việt Nam':'Vietnam lens'}</span><h2>{vi?'Đức Mẹ La Vang: một địa danh, nhiều lớp ký ức.':'Our Lady of La Vang: one place, many layers of memory.'}</h2><p>{vi?'Từ một địa điểm hành hương, bạn có thể đi vào lịch sử Công giáo Việt Nam, lòng sùng kính Đức Mẹ, đời sống Giáo Hội địa phương và những nhân vật liên quan.':'From one pilgrimage site, move into Vietnamese Catholic history, Marian devotion, local Church life and related people.'}</p><Link className="btn btn-secondary" href={href('/dia-diem','/places')}>{vi?'Khám phá La Vang →':'Explore La Vang →'}</Link></div>
+        <div className={styles.storyImage}><EditorialArtwork assetId="place.la-vang-shrine" height={360} radius={22}/></div>
+        <div><span className="eyebrow">{vi?'Góc nhìn Việt Nam':'Vietnam lens'}</span><h2>{vi?'Đức Mẹ La Vang: một địa danh, nhiều lớp ký ức.':'Our Lady of La Vang: one place, many layers of memory.'}</h2><p>{vi?'Từ một trung tâm hành hương, bạn có thể lần theo lịch sử Công giáo Việt Nam, lòng tôn kính Đức Mẹ, đời sống của Giáo Hội địa phương và những nhân vật liên quan.':'From one pilgrimage site, move into Vietnamese Catholic history, Marian devotion, local Church life and related people.'}</p><Link className="btn btn-secondary" href={href('/dia-diem','/places')}>{vi?'Khám phá La Vang →':'Explore La Vang →'}</Link></div>
       </article>
 
       <aside className={styles.graphCard}>
         <span className="eyebrow">{vi?'Tri thức được kết nối':'Connected knowledge'}</span>
-        <h2>{vi?'Một nhân vật mở ra cả một mạng lưới.':'One person opens an entire network.'}</h2>
+        <h2>{vi?'Một nhân vật có thể mở ra cả một mạng lưới tri thức.':'One person opens an entire network.'}</h2>
         <RelationshipOrbit center={vi?'Augustinô':'Augustine'} items={[{label:'Monica',detail:vi?'thân mẫu':'mother'},{label:'Ambrôsiô',detail:vi?'giám mục':'bishop'},{label:'Hippo',detail:vi?'địa danh':'place'},{label:vi?'Tự Thuật':'Confessions',detail:vi?'tác phẩm':'work'},{label:vi?'Ân sủng':'Grace',detail:vi?'giáo lý':'doctrine'}]}/>
         <Link href={href('/kham-pha','/explore')}>{vi?'Xem bản đồ đầy đủ →':'View full map →'}</Link>
       </aside>
     </section>
 
     <section className={styles.journey}>
-      <div><span className="eyebrow">{vi?'Hành trình học':'Learning journey'}</span><h2>{vi?'Từ Chúa Giêsu đến Công đồng Nixêa':'From Jesus to the Council of Nicaea'}</h2><p>{vi?'Sáu chặng ngắn nối Chúa Giêsu, các Tông đồ, Lễ Ngũ Tuần, truyền giáo, bách hại, hoàng đế Constantinus và Công đồng Nixêa.':'Six milestones connect Jesus, the apostles, Pentecost, mission, persecution, Constantine and Nicaea.'}</p><Link className="btn btn-primary" href={href('/hanh-trinh/tu-chua-giesu-den-nixea','/learn/jesus-to-nicaea')}>{vi?'Bắt đầu hành trình →':'Start the journey →'}</Link></div>
+      <div><span className="eyebrow">{vi?'Hành trình học hỏi':'Learning journey'}</span><h2>{vi?'Từ Chúa Giêsu đến Công đồng Nixêa':'From Jesus to the Council of Nicaea'}</h2><p>{vi?'Sáu chặng kết nối Chúa Giêsu, các Tông đồ, Lễ Ngũ Tuần, sứ vụ truyền giáo, thời kỳ bách hại, Hoàng đế Constantinô và Công đồng Nixêa.':'Six milestones connect Jesus, the apostles, Pentecost, mission, persecution, Constantine and Nicaea.'}</p><Link className="btn btn-primary" href={href('/hanh-trinh/tu-chua-giesu-den-nixea','/learn/jesus-to-nicaea')}>{vi?'Bắt đầu hành trình →':'Start the journey →'}</Link></div>
       <EditorialArtwork assetId="art.nicaea-icon" height={310} radius={22}/>
     </section>
   </main>;
