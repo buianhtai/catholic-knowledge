@@ -1,22 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import EditorialArtwork from '@/components/media/EditorialArtwork';
-import { MilestoneRibbon, RelationshipOrbit } from '@/components/visual/Infographics';
+import styles from './journey.module.css';
 
-const steps=[
- ['Chúa Giêsu và các Tông đồ','Câu chuyện bắt đầu với Chúa Giêsu, lời rao giảng Nước Thiên Chúa và những môn đệ trở thành chứng nhân của Người.','art.gutenberg-bible',['Chúa Giêsu','Nhóm Mười Hai','Galilê','Nước Thiên Chúa','Giêrusalem','Tin Mừng']],
- ['Lễ Ngũ Tuần','Các môn đệ công khai loan báo Tin Mừng; đời sống truyền giáo của Giáo Hội bắt đầu lan rộng.','art.gutenberg-bible',['Chúa Thánh Thần','Phêrô','Giêrusalem','Công vụ','Truyền giáo','Phép Rửa']],
- ['Phêrô, Phaolô và sứ mạng','Các cộng đoàn Kitô hữu lan rộng quanh Địa Trung Hải và đối diện những câu hỏi mục vụ mới.','art.gutenberg-bible',['Phêrô','Phaolô','Antiôkia','Rôma','Các thư','Dân ngoại']],
- ['Bách hại và tăng trưởng','Các vị tử đạo, các nhà hộ giáo và những cộng đoàn địa phương góp phần định hình căn tính Kitô giáo trong Đế quốc Rôma.','art.nicaea-icon',['Các vị tử đạo','Rôma','Hộ giáo','Giáo hội tại gia','Chứng tá','Đế quốc']],
- ['Constantinô và một thế giới đổi thay','Sự khoan dung tôn giáo của đế quốc làm thay đổi vị thế công khai của Giáo Hội và tạo điều kiện cho các công đồng lớn.','art.nicaea-icon',['Constantinô','Milan','Đế quốc','Giám mục','Phụng tự công khai','Công đồng']],
- ['Công đồng Nixêa','Năm 325, các giám mục quy tụ để giải quyết cuộc tranh luận Ariô và diễn tả rõ hơn đức tin của Giáo Hội về Đức Kitô.','art.nicaea-icon',['Nixêa','Ariô','Athanasiô','Kinh Tin Kính','Đồng bản thể','Kitô học']],
+const chapters = [
+  {year:'k. 30',kicker:'Khởi nguyên',title:'Chúa Giêsu và các Tông đồ',body:'Từ Galilê đến Giêrusalem, lời rao giảng Nước Thiên Chúa quy tụ một cộng đoàn môn đệ. Từ đây, một câu chuyện sẽ lan vượt khỏi biên giới của một vùng đất.',asset:'art.gutenberg-bible',nodes:['Galilê','Nhóm Mười Hai','Giêrusalem','Tin Mừng']},
+  {year:'k. 30',kicker:'Ngọn lửa',title:'Lễ Ngũ Tuần',body:'Các môn đệ bước ra khỏi căn phòng đóng kín. Việc loan báo Tin Mừng trở thành một sứ mạng công khai và cộng đoàn Giáo Hội bắt đầu mở rộng.',asset:'art.mass-at-bolsena',nodes:['Chúa Thánh Thần','Phêrô','Phép Rửa','Công vụ']},
+  {year:'30–60',kicker:'Những con đường',title:'Phêrô, Phaolô và sứ mạng',body:'Từ Giêrusalem, Antiôkia đến Rôma, những con đường của Địa Trung Hải trở thành mạng lưới truyền giáo. Những cộng đoàn mới đặt ra những câu hỏi mới về đức tin và đời sống.',asset:'art.gutenberg-bible',nodes:['Phêrô','Phaolô','Antiôkia','Rôma']},
+  {year:'64–303',kicker:'Chứng tá',title:'Bách hại và tăng trưởng',body:'Đức tin không lớn lên trong an toàn. Chứng tá của các vị tử đạo, các nhà hộ giáo và những Giáo hội địa phương làm cho căn tính Kitô giáo ngày càng rõ nét.',asset:'art.nicaea-icon',nodes:['Các vị tử đạo','Hộ giáo','Rôma','Giáo hội địa phương']},
+  {year:'313',kicker:'Bước ngoặt',title:'Constantinô và một thế giới đổi thay',body:'Khi Kitô hữu có thể sống đức tin công khai hơn, Giáo Hội bước vào một không gian lịch sử mới. Những tranh luận thần học giờ đây có thể quy tụ các giám mục từ nhiều miền.',asset:'art.nicaea-icon',nodes:['Constantinô','Milan','Giám mục','Đế quốc']},
+  {year:'325',kicker:'Hội tụ',title:'Công đồng Nixêa',body:'Tại Nixêa, các giám mục đối diện một câu hỏi quyết định về căn tính của Đức Kitô. Kinh Tin Kính trở thành một điểm sáng kết nối các cộng đoàn trong cùng một lời tuyên xưng.',asset:'art.nicaea-icon',nodes:['Nixêa','Ariô','Athanasiô','Kinh Tin Kính']},
 ] as const;
 
-export default function JesusToNicaeaPage(){const[active,setActive]=useState(0);const progress=((active+1)/steps.length)*100;return <main style={{background:'#f7f1e7',minHeight:'100vh',padding:'40px 0 80px'}}><div className="container">
- <div className="eyebrow">Hành trình học có hướng dẫn · Giáo Hội sơ khai</div><h1 style={{font:'clamp(50px,7vw,86px)/.94 Georgia,serif',letterSpacing:'-.04em',margin:'10px 0 14px',color:'#0b2848'}}>Từ Chúa Giêsu đến Nixêa</h1><p style={{maxWidth:760,color:'#59656f',font:'17px/1.7 Georgia,serif'}}>Sáu chặng trực quan kết nối con người, biến cố, địa danh và tư tưởng — thay vì biến lịch sử Giáo Hội thành một danh sách ngày tháng rời rạc.</p>
- <section style={{marginTop:22,background:'#fffaf1',border:'1px solid #dfd1ba',borderRadius:18,padding:'10px 16px'}}><MilestoneRibbon items={steps.map(([title],index)=>({year:`0${index+1}`,title,detail:index===active?'Chặng hiện tại':'Chặng hành trình'}))}/></section>
- <section style={{display:'grid',gridTemplateColumns:'280px minmax(0,1fr)',gap:16,marginTop:18}}>
-  <nav style={{background:'#0a2847',borderRadius:16,padding:16,color:'#fff',boxShadow:'0 12px 30px rgba(20,33,58,.14)'}}>{steps.map(([title],index)=><button key={title} onClick={()=>setActive(index)} style={{width:'100%',display:'grid',gridTemplateColumns:'34px 1fr',gap:10,alignItems:'center',textAlign:'left',border:0,borderRadius:9,padding:'11px 10px',cursor:'pointer',background:active===index?'rgba(255,255,255,.13)':'transparent',color:'#fff',borderLeft:active===index?'3px solid #d1a04a':'3px solid transparent'}}><span style={{display:'grid',placeItems:'center',width:26,height:26,borderRadius:999,background:active===index?'#d1a04a':'rgba(255,255,255,.1)',color:'#071d34',fontWeight:800}}>{index+1}</span><span><small style={{display:'block',color:'#c2ccd5'}}>Chặng 0{index+1}</small><strong style={{font:'13px Georgia,serif'}}>{title}</strong></span></button>)}</nav>
-  <article style={{minHeight:650,border:'1px solid #dfd1ba',borderRadius:16,background:'linear-gradient(135deg,#fffaf1,#f1e5d0)',padding:26,position:'relative',overflow:'hidden'}}><div style={{position:'relative',zIndex:2,display:'grid',gridTemplateColumns:'minmax(0,.9fr) minmax(320px,1.1fr)',gap:20,alignItems:'start'}}><div><div className="eyebrow">Chặng {active+1} · {active+1}/{steps.length}</div><EditorialArtwork assetId={steps[active][2]} height={260} radius={16} showCredit={false}/><h2 style={{font:'clamp(34px,4vw,48px)/1.02 Georgia,serif',color:'#0b2848',margin:'18px 0 16px'}}>{steps[active][0]}</h2><p style={{font:'17px/1.75 Georgia,serif',color:'#59656f'}}>{steps[active][1]}</p></div><RelationshipOrbit center={steps[active][0]} items={steps[active][3].map(label=>({label}))}/></div><div style={{position:'absolute',left:26,right:26,bottom:24}}><div style={{height:6,background:'#e1d5c3',borderRadius:99,overflow:'hidden'}}><div style={{width:`${progress}%`,height:'100%',background:'#9a691f',transition:'width .25s'}}/></div><div style={{display:'flex',justifyContent:'space-between',marginTop:14}}><button className="btn btn-secondary" disabled={active===0} onClick={()=>setActive(v=>Math.max(0,v-1))}>← Trước</button><button className="btn btn-primary" disabled={active===steps.length-1} onClick={()=>setActive(v=>Math.min(steps.length-1,v+1))}>Tiếp →</button></div></div></article>
- </section></div></main>}
+export default function JesusToNicaeaPage(){
+ const [active,setActive]=useState(0);
+ useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.key==='ArrowRight')setActive(v=>Math.min(chapters.length-1,v+1));if(e.key==='ArrowLeft')setActive(v=>Math.max(0,v-1));};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[]);
+ const chapter=chapters[active];
+ return <main className={styles.page}>
+   <div className={styles.stars} aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div>
+   <header className={styles.top}><Link href="/">☩ <span>Catholic Knowledge</span></Link><div><span>Hành trình 01</span><b>{String(active+1).padStart(2,'0')} / {String(chapters.length).padStart(2,'0')}</b></div></header>
+   <section className={styles.stage}>
+     <div className={styles.intro}>
+       <span className={styles.eyebrow}>Một hành trình xuyên qua lịch sử đức tin</span>
+       <h1>Từ Chúa Giêsu<br/><em>đến Nixêa</em></h1>
+       <p>Không đọc lịch sử như một danh sách ngày tháng. Hãy đi xuyên qua những con người, địa danh và ý tưởng đã kết nối để hình thành Giáo Hội sơ khai.</p>
+       <div className={styles.hint}>Cuộn, chạm hoặc dùng phím ← → để du hành</div>
+     </div>
+     <div className={styles.galaxy} aria-label="Bản đồ hành trình">
+       <div className={styles.orbitA}/><div className={styles.orbitB}/><div className={styles.glow}/>
+       {chapters.map((item,index)=>{const angle=(index/chapters.length)*Math.PI*2-Math.PI/2;const x=50+Math.cos(angle)*39;const y=50+Math.sin(angle)*39;return <button key={item.title} onClick={()=>setActive(index)} className={`${styles.starNode} ${active===index?styles.activeNode:''}`} style={{left:`${x}%`,top:`${y}%`}}><span>{index+1}</span><small>{item.year}</small></button>})}
+       <div className={styles.core}><span>{chapter.year}</span><strong>{chapter.kicker}</strong><small>{active===5?'NIXÊA':'ĐANG DU HÀNH'}</small></div>
+     </div>
+   </section>
+
+   <section className={styles.chapter} key={chapter.title}>
+     <div className={styles.art}><EditorialArtwork assetId={chapter.asset} height={560} radius={0} showCredit={false}/><div className={styles.artShade}/><div className={styles.artLabel}><span>{chapter.year}</span><small>Chặng {active+1} · {chapter.kicker}</small></div></div>
+     <article className={styles.story}>
+       <div className={styles.chapterNumber}>0{active+1}</div>
+       <span className={styles.eyebrow}>{chapter.kicker} · {chapter.year}</span>
+       <h2>{chapter.title}</h2><p>{chapter.body}</p>
+       <div className={styles.constellation}>{chapter.nodes.map((node,index)=><span key={node} style={{animationDelay:`${index*120}ms`}}><i/> {node}</span>)}</div>
+       <div className={styles.controls}><button disabled={active===0} onClick={()=>setActive(v=>Math.max(0,v-1))}>← Chặng trước</button><div className={styles.progress}>{chapters.map((_,i)=><button aria-label={`Đi đến chặng ${i+1}`} key={i} onClick={()=>setActive(i)} className={i<=active?styles.done:''}/>)}</div><button disabled={active===chapters.length-1} onClick={()=>setActive(v=>Math.min(chapters.length-1,v+1))}>Chặng tiếp →</button></div>
+       {active===chapters.length-1&&<Link className={styles.enter} href="/cong-dong/nixea">Bước vào Công đồng Nixêa →</Link>}
+     </article>
+   </section>
+
+   <section className={styles.epilogue}><span>Không có điểm nào đứng một mình.</span><h2>Mỗi ánh sáng mở ra<br/>một thế giới khác.</h2><p>Con người dẫn đến địa danh. Địa danh dẫn đến biến cố. Biến cố dẫn đến giáo lý, tác phẩm và những câu chuyện tiếp theo.</p><Link href="/kham-pha">Mở bản đồ tri thức →</Link></section>
+ </main>
+}
