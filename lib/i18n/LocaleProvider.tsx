@@ -9,20 +9,26 @@ type LocaleContextValue = { locale: AppLocale; setLocale: (locale: AppLocale) =>
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<AppLocale>('en');
+  const [locale, setLocale] = useState<AppLocale>('en');
 
   useEffect(() => {
     const saved = window.localStorage.getItem('ck-locale');
-    if (saved === 'en' || saved === 'vi') setLocaleState(saved);
+    if (saved !== 'en' && saved !== 'vi') return;
+    const frame = window.requestAnimationFrame(() => setLocale(saved));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  const setLocale = (next: AppLocale) => {
-    setLocaleState(next);
-    window.localStorage.setItem('ck-locale', next);
-    document.documentElement.lang = next;
-  };
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    window.localStorage.setItem('ck-locale', locale);
+  }, [locale]);
 
-  const value = useMemo(() => ({ locale, setLocale, toggleLocale: () => setLocale(locale === 'en' ? 'vi' : 'en') }), [locale]);
+  const value = useMemo(() => ({
+    locale,
+    setLocale,
+    toggleLocale: () => setLocale((current) => current === 'en' ? 'vi' : 'en'),
+  }), [locale]);
+
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }
 
