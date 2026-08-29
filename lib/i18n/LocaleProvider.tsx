@@ -13,7 +13,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = window.localStorage.getItem('ck-locale');
-    if (saved === 'en' || saved === 'vi') setLocale(saved);
+    if (saved !== 'en' && saved !== 'vi') return;
+    const frame = window.requestAnimationFrame(() => setLocale(saved));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
