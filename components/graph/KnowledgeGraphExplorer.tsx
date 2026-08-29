@@ -1,11 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ReactFlow,
   Background,
   Controls,
+  MiniMap,
   MarkerType,
+  useReactFlow,
+  ReactFlowProvider,
   type Edge,
   type Node,
   type NodeMouseHandler,
@@ -13,112 +16,92 @@ import {
 import '@xyflow/react/dist/style.css';
 import { entities, relationships } from '@/data/augustine';
 import { text } from '@/lib/knowledge/types';
+import { getEditorialAsset } from '@/lib/media/assets';
+import KnowledgeEntityNode, { type KnowledgeNodeData } from './KnowledgeEntityNode';
 import styles from './KnowledgeGraph.module.css';
 
 type Lens = 'all' | 'person' | 'place' | 'work' | 'concept';
 
 const positions: Record<string, { x: number; y: number }> = {
   'person.augustine-of-hippo': { x: 420, y: 255 },
-  'person.monica': { x: 80, y: 90 },
-  'person.ambrose-of-milan': { x: 700, y: 80 },
-  'place.tagaste': { x: 90, y: 420 },
-  'place.hippo-regius': { x: 720, y: 430 },
-  'work.confessions': { x: 240, y: 535 },
-  'work.city-of-god': { x: 535, y: 545 },
-  'concept.grace': { x: 815, y: 250 },
+  'person.monica': { x: 65, y: 80 },
+  'person.ambrose-of-milan': { x: 760, y: 80 },
+  'place.tagaste': { x: 70, y: 445 },
+  'place.hippo-regius': { x: 760, y: 455 },
+  'work.confessions': { x: 230, y: 580 },
+  'work.city-of-god': { x: 530, y: 600 },
+  'concept.grace': { x: 850, y: 270 },
 };
 
-const icons: Record<string, string> = { person: '✦', place: '⌖', work: '▤', concept: '◈', event: '◎', organization: '⌂' };
+const assets: Record<string,string> = {
+  'person.augustine-of-hippo':'art.augustine-philippe-de-champaigne',
+  'person.monica':'person.monica-piero',
+  'person.ambrose-of-milan':'person.ambrose',
+  'work.confessions':'art.gutenberg-bible',
+  'work.city-of-god':'art.gutenberg-bible',
+};
 
-export default function KnowledgeGraphExplorer() {
-  const [lens, setLens] = useState<Lens>('all');
-  const [query, setQuery] = useState('');
-  const [selectedId, setSelectedId] = useState('person.augustine-of-hippo');
-  const [storyStep, setStoryStep] = useState(0);
+const nodeTypes = { knowledge: KnowledgeEntityNode };
 
-  const story = ['person.monica', 'place.tagaste', 'person.augustine-of-hippo', 'person.ambrose-of-milan', 'work.confessions', 'place.hippo-regius'];
+function Canvas(){
+  const [lens,setLens]=useState<Lens>('all');
+  const [query,setQuery]=useState('');
+  const [selectedId,setSelectedId]=useState('person.augustine-of-hippo');
+  const [history,setHistory]=useState<string[]>(['person.augustine-of-hippo']);
+  const { fitView } = useReactFlow();
 
-  const nodes = useMemo<Node[]>(() => entities.map((entity) => {
-    const visible = lens === 'all' || entity.type === lens;
-    const matches = !query || text(entity.labels).toLowerCase().includes(query.toLowerCase());
-    const selected = entity.id === selectedId;
+  const selectedRelations = useMemo(()=>relationships.filter(r=>r.from===selectedId||r.to===selectedId),[selectedId]);
+  const neighbors = useMemo(()=>new Set(selectedRelations.flatMap(r=>[r.from,r.to])),[selectedRelations]);
+
+  const focus = useCallback((id:string)=>{
+    setSelectedId(id);
+    setHistory(prev=>prev.at(-1)===id?prev:[...prev,id].slice(-6));
+    requestAnimationFrame(()=>fitView({nodes:[{id}],duration:500,maxZoom:1.15,padding:.7}));
+  },[fitView]);
+
+  const nodes = useMemo<Node<KnowledgeNodeData>[]>(()=>entities.map(entity=>{
+    const visibleByLens=lens==='all'||entity.type===lens;
+    const matches=!query||text(entity.labels).toLowerCase().includes(query.toLowerCase());
+    const related=neighbors.has(entity.id)||entity.id===selectedId;
+    const degree=relationships.filter(r=>r.from===entity.id||r.to===entity.id).length;
     return {
-      id: entity.id,
-      position: positions[entity.id] ?? { x: 0, y: 0 },
-      data: { label: `${icons[entity.type]} ${text(entity.labels)}` },
-      style: {
-        opacity: visible && matches ? 1 : 0.18,
-        borderRadius: 18,
-        border: selected ? '2px solid #b48a3c' : '1px solid #ded4c4',
-        background: entity.id === 'person.augustine-of-hippo' ? '#14213a' : '#fffdf8',
-        color: entity.id === 'person.augustine-of-hippo' ? '#fff' : '#14213a',
-        padding: 14,
-        width: entity.id === 'person.augustine-of-hippo' ? 190 : 165,
-        fontWeight: 700,
-        boxShadow: selected ? '0 14px 34px rgba(20,33,58,.16)' : 'none',
-      },
+      id:entity.id,
+      type:'knowledge',
+      position:positions[entity.id]??{x:0,y:0},
+      data:{label:text(entity.labels),type:entity.type,subtitle:entity.subtype,assetId:assets[entity.id],selected:entity.id===selectedId,muted:!(visibleByLens&&matches&&related),relationCount:degree},
     };
-  }), [lens, query, selectedId]);
+  }),[lens,query,selectedId,neighbors]);
 
-  const edges = useMemo<Edge[]>(() => relationships.map((rel) => ({
-    id: rel.id,
-    source: rel.from,
-    target: rel.to,
-    label: rel.type.replaceAll('_', ' ').toLowerCase(),
-    markerEnd: { type: MarkerType.ArrowClosed },
-    style: { strokeWidth: 1.5 },
-    labelStyle: { fontSize: 10, fill: '#6f756f' },
-  })), []);
+  const edges = useMemo<Edge[]>(()=>relationships.map(rel=>{
+    const active=rel.from===selectedId||rel.to===selectedId;
+    return {id:rel.id,source:rel.from,target:rel.to,label:rel.type.replaceAll('_',' ').toLowerCase(),animated:active,markerEnd:{type:MarkerType.ArrowClosed},style:{stroke:active?'#c99742':'#9da7ae',strokeWidth:active?2.6:1.2,opacity:neighbors.has(rel.from)&&neighbors.has(rel.to)?1:.18},labelStyle:{fontSize:10,fill:active?'#8a5b17':'#6f756f',fontWeight:active?700:400},labelBgStyle:{fill:'#fbf7ee',fillOpacity:.9}};
+  }),[selectedId,neighbors]);
 
-  const selected = entities.find((entity) => entity.id === selectedId) ?? entities[0];
-  const selectedRelations = relationships.filter((edge) => edge.from === selectedId || edge.to === selectedId);
+  const selected=entities.find(e=>e.id===selectedId)??entities[0];
+  const selectedAsset=assets[selected.id]?getEditorialAsset(assets[selected.id]):undefined;
+  const handleNodeClick:NodeMouseHandler=(_,node)=>focus(node.id);
 
-  const advanceStory = () => {
-    const next = (storyStep + 1) % story.length;
-    setStoryStep(next);
-    setSelectedId(story[next]);
-  };
+  return <div className={styles.shell}>
+    <header className={styles.universeHeader}><div><div className="eyebrow">Catholic Knowledge · Explore mode</div><h1>Đi vào thế giới của Augustinô.</h1><p>Chọn một nhân vật, địa danh, tác phẩm hoặc ý tưởng. Canvas sẽ tập trung vào thực thể đó và làm nổi bật những gì thật sự liên quan.</p></div><div className={styles.history}>{history.map((id,i)=>{const e=entities.find(x=>x.id===id);return e?<button onClick={()=>focus(id)} key={`${id}-${i}`}>{i>0&&'‹ '}{text(e.labels)}</button>:null})}</div></header>
 
-  const handleNodeClick: NodeMouseHandler = (_, node) => setSelectedId(node.id);
+    <div className={styles.toolbar}><input className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Tìm Monica, Ambrôsiô, Tự Thuật…" aria-label="Tìm trong bản đồ"/>{([['all','Tất cả'],['person','Nhân vật'],['place','Địa danh'],['work','Tác phẩm'],['concept','Ý tưởng']] as [Lens,string][]).map(([v,l])=><button key={v} onClick={()=>setLens(v)} className={lens===v?styles.activeTool:''}>{l}</button>)}<button onClick={()=>focus('person.augustine-of-hippo')}>Về Augustinô</button><button onClick={()=>fitView({duration:450,padding:.2})}>Toàn cảnh</button></div>
 
-  return (
-    <div className={`container ${styles.page}`}>
-      <header className={styles.header}>
-        <div><div className="eyebrow">Interactive knowledge graph</div><h1>Explore Augustine’s world.</h1></div>
-        <p>Filter by semantic lens, inspect relationships, search the focused graph, or play a guided story through Augustine’s life.</p>
-      </header>
-      <div className={styles.toolbar}>
-        <input className={styles.search} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find Monica, Confessions, Grace…" aria-label="Search graph" />
-        <button className={styles.storyButton} onClick={advanceStory}>Story mode · next →</button>
+    <section className={styles.interactiveWorkspace}>
+      <div className={styles.interactiveCanvas}>
+        <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodeClick={handleNodeClick} fitView minZoom={.35} maxZoom={1.6} proOptions={{hideAttribution:true}} panOnScroll zoomOnPinch selectionOnDrag={false}>
+          <Background gap={32} size={1}/><Controls showInteractive={false}/><MiniMap pannable zoomable maskColor="rgba(6,24,45,.12)"/>
+        </ReactFlow>
+        <div className={styles.canvasHint}>Kéo để di chuyển · cuộn/chụm để thu phóng · chọn node để tập trung</div>
       </div>
-      <section className={styles.workspace}>
-        <aside className={`${styles.panel} ${styles.sidebar}`}>
-          <h3>Knowledge lens</h3>
-          {([['all','All'],['person','People'],['place','Places'],['work','Writings'],['concept','Ideas']] as [Lens,string][]).map(([value,label]) => (
-            <button key={value} onClick={() => setLens(value)} className={`${styles.lens} ${lens === value ? styles.lensActive : ''}`}><span>{value === 'all' ? '◎' : icons[value]}</span>{label}</button>
-          ))}
-          <div className={styles.legend}>
-            <div className={styles.legendItem}><span className={styles.swatch}/>Selected nodes expose provenance-aware details.</div>
-            <div className={styles.legendItem}><span className={styles.swatch}/>Edges are canonical typed relationships.</div>
-          </div>
-        </aside>
 
-        <div className={`${styles.panel} ${styles.canvas}`}>
-          <ReactFlow nodes={nodes} edges={edges} fitView minZoom={0.45} maxZoom={1.5} onNodeClick={handleNodeClick} proOptions={{ hideAttribution: true }}>
-            <Background gap={28} size={1} />
-            <Controls showInteractive={false} />
-          </ReactFlow>
-        </div>
-
-        <aside className={`${styles.panel} ${styles.detail}`}>
-          <div className={styles.detailIcon}>{icons[selected.type]}</div>
-          <div className="eyebrow">{selected.type} · {selected.subtype}</div>
-          <h2>{text(selected.labels)}</h2>
-          <p>{selected.summary ? text(selected.summary) : 'Explore this node through its typed relationships and supporting sources.'}</p>
-          <div className={styles.meta}><span className={styles.chip}>{selectedRelations.length} relationships</span><span className={styles.chip}>{selected.sourceRefs.length} source refs</span></div>
-          <div className={styles.story}><strong>Why this matters</strong><p>The graph is a navigation and explanation surface: every relationship can lead into another entity page, timeline event, source, or guided story step.</p></div>
-        </aside>
-      </section>
-    </div>
-  );
+      <aside className={styles.entityInspector}>
+        {selectedAsset&&<img className={styles.inspectorImage} src={selectedAsset.src} alt={selectedAsset.alt.vi??selectedAsset.alt.en}/>}<div className="eyebrow">{selected.type} · {selected.subtype}</div><h2>{text(selected.labels)}</h2><p>{selected.summary?text(selected.summary):'Khám phá thực thể này qua các mối quan hệ được mô hình hóa trong bản đồ tri thức.'}</p>
+        <div className={styles.inspectorStats}><span>{selectedRelations.length} mối liên hệ</span><span>{selected.sourceRefs.length} nguồn</span></div>
+        <div className={styles.relationActions}><strong>Đi tiếp từ đây</strong>{selectedRelations.map(rel=>{const otherId=rel.from===selectedId?rel.to:rel.from;const other=entities.find(e=>e.id===otherId);return other?<button key={rel.id} onClick={()=>focus(otherId)}><span>{rel.type.replaceAll('_',' ')}</span><b>{text(other.labels)} →</b></button>:null})}</div>
+        <div className={styles.inspectorFoot}><strong>Explore, không phải slideshow.</strong><p>Mỗi lựa chọn thay đổi trọng tâm của cùng một không gian tri thức thay vì đẩy bạn sang một trang tĩnh mới.</p></div>
+      </aside>
+    </section>
+  </div>;
 }
+
+export default function KnowledgeGraphExplorer(){return <ReactFlowProvider><Canvas/></ReactFlowProvider>}
