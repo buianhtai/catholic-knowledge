@@ -49,20 +49,39 @@ const assets: Record<string, string> = {
 const nodeTypes = { knowledge: KnowledgeEntityNode };
 const index = buildExplorationIndex(entities, relationships);
 
+function readExplorationContext(): ExplorationContext | null {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  const context: ExplorationContext = {
+    focusEntityId: params.get('focus') ?? undefined,
+    journeyId: params.get('journey') ?? undefined,
+    chapterId: params.get('chapter') ?? undefined,
+    chapterLabel: params.get('chapterLabel') ?? undefined,
+  };
+  return context.focusEntityId || context.journeyId || context.chapterId || context.chapterLabel ? context : null;
+}
+
 function Canvas() {
   const [lens, setLens] = useState<Lens>('all');
   const [query, setQuery] = useState('');
-  const [selectedId, setSelectedId] = useState('person.augustine-of-hippo');
+  const [initialContext] = useState<ExplorationContext | null>(readExplorationContext);
+  const initialFocusId = initialContext?.focusEntityId && index.entityById.has(initialContext.focusEntityId)
+    ? initialContext.focusEntityId
+    : 'person.augustine-of-hippo';
+  const [selectedId, setSelectedId] = useState(initialFocusId);
   const [pathOrigin, setPathOrigin] = useState<string | null>(null);
-  const [history, setHistory] = useState<string[]>(['person.augustine-of-hippo']);
-  const [journeyContext, setJourneyContext] = useState<ExplorationContext | null>(null);
+  const [history, setHistory] = useState<string[]>([initialFocusId]);
   const [inspectorOpen, setInspectorOpen] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const { fitView } = useReactFlow();
 
+  const journeyContext = initialContext?.journeyId ? initialContext : null;
   const selectedRelations = index.relationsByEntityId.get(selectedId) ?? [];
-  const neighbors = index.neighborIdsByEntityId.get(selectedId) ?? new Set([selectedId]);
+  const neighbors = useMemo(
+    () => index.neighborIdsByEntityId.get(selectedId) ?? new Set([selectedId]),
+    [selectedId],
+  );
   const activePath = useMemo(
     () => (pathOrigin ? findRelationshipPath(pathOrigin, selectedId, relationships) : []),
     [pathOrigin, selectedId],
@@ -89,18 +108,6 @@ function Canvas() {
     },
     [fitView, reducedMotion],
   );
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const context: ExplorationContext = {
-      focusEntityId: params.get('focus') ?? undefined,
-      journeyId: params.get('journey') ?? undefined,
-      chapterId: params.get('chapter') ?? undefined,
-      chapterLabel: params.get('chapterLabel') ?? undefined,
-    };
-    if (context.journeyId) setJourneyContext(context);
-    if (context.focusEntityId && index.entityById.has(context.focusEntityId)) focus(context.focusEntityId);
-  }, [focus]);
 
   const nodes = useMemo<Node<KnowledgeNodeData>[]>(
     () =>
