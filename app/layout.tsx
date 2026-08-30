@@ -4,6 +4,7 @@ import SiteNavigation from '@/components/navigation/SiteNavigation';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import './globals.css';
 import '@/styles/responsive.css';
+import '@/styles/navigation-responsive.css';
 
 export const metadata: Metadata = {
   title: {
