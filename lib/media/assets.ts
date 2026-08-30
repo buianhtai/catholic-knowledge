@@ -1,7 +1,7 @@
 import type { LocalizedText } from '@/lib/knowledge/types';
 
 export type AssetRole = 'editorial' | 'portrait' | 'decorative' | 'factual-diagram' | 'manuscript';
-export interface EditorialAsset { id:string; role:AssetRole; src:string; alt:LocalizedText; creator?:string; sourceUrl?:string; license?:string; attribution?:string; generated?:boolean; factual?:boolean; }
+export interface EditorialAsset { id:string; role:AssetRole; src:string; alt:LocalizedText; creator?:string; sourceUrl?:string; license?:string; attribution?:string; generated?:boolean; factual?:boolean; focalPoint?:string; }
 export const assetRules={factualDiagramsMustBeStructured:true,generatedRasterMayEncodeCanonicalFacts:false,requireAttributionWhenLicenseRequiresIt:true} as const;
 export const editorialAssets:EditorialAsset[]=[
 {id:'art.augustine-philippe-de-champaigne',role:'portrait',src:'https://commons.wikimedia.org/wiki/Special:FilePath/Saint%20Augustine%20by%20Philippe%20de%20Champaigne.jpg?width=1400',alt:{en:'Classical painted portrait of Saint Augustine',vi:'Chân dung hội họa cổ điển của Thánh Augustinô'},creator:'Philippe de Champaigne',sourceUrl:'https://commons.wikimedia.org/wiki/File:Saint_Augustine_by_Philippe_de_Champaigne.jpg',license:'Public domain',attribution:'Philippe de Champaigne · Wikimedia Commons',generated:false,factual:false},
