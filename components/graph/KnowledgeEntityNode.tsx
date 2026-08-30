@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { getEditorialAsset } from '@/lib/media/assets';
 import styles from './KnowledgeGraph.module.css';
@@ -33,7 +34,7 @@ export default function KnowledgeEntityNode({ data }: NodeProps) {
     onKeyDown={activate}
   >
     <Handle type="target" position={Position.Left} className={styles.handle}/>
-    <div className={styles.nodeMedia}>{asset ? <img src={asset.src} alt={asset.alt.vi ?? asset.alt.en} loading="lazy" decoding="async"/> : <span aria-hidden="true">{d.type==='place'?'⌖':d.type==='work'?'▤':d.type==='concept'?'◈':'✦'}</span>}</div>
+    <div className={styles.nodeMedia}>{asset ? <Image src={asset.src} alt={asset.alt.vi ?? asset.alt.en} width={72} height={76} sizes="72px" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:asset.focalPoint ?? 'center'}}/> : <span aria-hidden="true">{d.type==='place'?'⌖':d.type==='work'?'▤':d.type==='concept'?'◈':'●'}</span>}</div>
     <div className={styles.nodeCopy}><small>{d.type}</small><strong>{d.label}</strong>{d.subtitle&&<span>{d.subtitle}</span>}<em className={styles.sourceBadge}>SRC {d.sourceCount ?? 0}</em></div>
     {typeof d.relationCount==='number'&&<b className={styles.nodeCount}>{d.relationCount}</b>}
     <Handle type="source" position={Position.Right} className={styles.handle}/>
