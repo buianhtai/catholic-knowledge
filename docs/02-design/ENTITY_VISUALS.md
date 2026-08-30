@@ -9,9 +9,9 @@ For explanation and presentation surfaces, named entities should be visually ide
 - Works and documents should prefer manuscript/book/document imagery when they are the current visual focus.
 - Named events should prefer relevant historical artwork or a place/document image tied to that event.
 - Concepts may use structured diagrams instead of decorative images.
-- Never use a generic artwork as if it depicts a specific person or event.
+- Never use a generic artwork as if it depicts a specific person, place, work, or event.
 - Do not use generic sparkle/star glyphs such as `✦`, `✧`, `★`, or `☆` as visual identity, emphasis, placeholders, infographic centers, or decorative navigation markers.
-- When no trustworthy image exists, use a neutral structural treatment (text, geometry, line, or data-driven diagram) rather than an unrelated decorative icon.
+- When no trustworthy image exists, use a neutral structural treatment rather than unrelated artwork.
 - Artwork provides editorial context, not historical proof; factual claims remain source-backed separately.
 
 ## Visual hierarchy and image budget
@@ -20,16 +20,31 @@ For explanation and presentation surfaces, named entities should be visually ide
 
 Dense surfaces must preserve a clear focal point:
 
-1. Prefer one dominant image per card, cluster, or explanatory moment.
+1. Prefer one dominant image per explanatory card, cluster, or moment.
 2. Secondary related entities should usually render as lightweight text/relationship nodes until selected, focused, expanded, or shown in a dedicated detail surface.
 3. Do not display a portrait/photo/manuscript for every named node simultaneously simply because verified assets exist.
 4. In a knowledge graph or constellation, imagery belongs to the active/focused entity. Surrounding nodes remain lightweight by default.
-5. A small number of secondary images may appear only when they materially improve recognition and do not compete with the focal entity.
-6. Repeated images of the same entity on the same page should be avoided unless the repetition serves a distinct task.
-7. Prefer progressive disclosure: overview first, richer imagery on focus or drill-down.
-8. If adding another image weakens hierarchy rather than improving recognition or understanding, do not add it.
+5. Repeated images of the same entity on the same page should be avoided unless the repetition serves a distinct task.
+6. Prefer progressive disclosure: overview first, richer imagery on focus or drill-down.
+7. If adding another image weakens hierarchy rather than improving recognition or understanding, do not add it.
 
-A text-only secondary node is **not** a regression when the surface intentionally reserves imagery for the focal entity. A regression occurs when the current focus has an appropriate verified asset but is represented by an unrelated icon, generic decoration, or misleading image.
+A text-only secondary node is **not** a regression when the surface intentionally reserves imagery for the focal entity.
+
+## Collection-page exception
+
+A true visual collection may show one exact image per item when the image is itself useful identification. The Places page is the reference case: Jerusalem, Rome, Lourdes, Fatima, La Vang, Hippo Regius, and Nazareth may each use one exact place image in their collection cards.
+
+This exception does **not** apply to explanation grids such as doctrine topics, prayer choices, Scripture book summaries, council participant overviews, or Kids story shelves. Those surfaces should remain primarily typographic/diagrammatic until the user opens an item.
+
+## Remote-image reliability
+
+Editorial imagery must never fail silently.
+
+- Render the exact verified asset URL when available.
+- Provide meaningful localized alt text.
+- If a remote image fails to load, preserve layout and show an explicit neutral fallback with the subject description.
+- Do not replace a failed exact image with unrelated artwork.
+- A broken/blank image slot is a UI regression.
 
 ## Visual resolution order
 
@@ -43,11 +58,15 @@ Do not jump from a missing exact asset to unrelated decorative artwork.
 
 ## Surface guidance
 
-- **Homepage / discovery cards:** normally one dominant image per card or story cluster. Do not repeat a hero image again in a nearby explanatory card merely to decorate it.
-- **Dense knowledge graph:** only the selected/focused entity should normally carry imagery; surrounding nodes stay lightweight until focused.
-- **Entity explorer:** hero/focus entity uses strong imagery. Relationship overviews should stay mostly structural; related entity images appear when opened or explicitly emphasized.
+- **Homepage / discovery cards:** normally one dominant image per card or story cluster.
+- **Dense knowledge graph:** only the selected/focused entity should normally carry imagery.
+- **Entity explorer:** hero/focus entity uses strong imagery; relationship overviews stay mostly structural.
 - **Timeline / map:** use imagery selectively for major milestones or the active location, not every point.
-- **Story / Journey mode:** one dominant historical visual per scene; secondary entities support the narrative without competing for attention.
+- **Story / Journey mode:** one dominant historical visual per scene.
+- **Scripture / Doctrine / Liturgy overview:** one strong contextual image near the top; lower grids prefer diagrams and typography.
+- **Council participant overview:** hero/event artwork may be strong; participant lists stay lightweight until an individual is focused.
+- **Kids:** one inviting story image at the main entry point; choice shelves should remain calm and easy to scan.
+- **Places collection:** one exact image per place card is allowed because visual recognition is part of the task; avoid duplicate gallery strips around the same collection.
 
 ## Interaction principle
 
