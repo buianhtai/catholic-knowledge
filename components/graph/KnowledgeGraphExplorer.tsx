@@ -24,6 +24,7 @@ import { getEditorialAsset } from '@/lib/media/assets';
 import KnowledgeEntityNode, { type KnowledgeNodeData } from './KnowledgeEntityNode';
 import AugustineContextSync from './AugustineContextSync';
 import styles from './KnowledgeGraph.module.css';
+import responsive from './KnowledgeGraphResponsive.module.css';
 
 type Lens = 'all' | 'person' | 'place' | 'work' | 'concept';
 
@@ -176,9 +177,9 @@ function Canvas() {
   const handleNodeClick: NodeMouseHandler = (_, node) => focus(node.id);
 
   return (
-    <div className={styles.shell}>
+    <div className={`${styles.shell} ${responsive.shell}`}>
       {journeyContext && (
-        <div className={styles.journeyBridge}>
+        <div className={`${styles.journeyBridge} ${responsive.journeyBridge}`}>
           <div>
             <span>Bạn vừa đến từ một câu chuyện</span>
             <b>{journeyContext.chapterLabel ?? 'Từ Chúa Giêsu đến Nixêa'}</b>
@@ -188,7 +189,7 @@ function Canvas() {
         </div>
       )}
 
-      <header className={styles.universeHeader}>
+      <header className={`${styles.universeHeader} ${responsive.universeHeader}`}>
         <div>
           <div className="eyebrow">Khám phá</div>
           <h1>Chạm vào một người. Xem điều gì kết nối với họ.</h1>
@@ -206,9 +207,9 @@ function Canvas() {
         </div>
       </header>
 
-      <div className={styles.toolbar}>
+      <div className={`${styles.toolbar} ${responsive.toolbar}`}>
         <input
-          className={styles.search}
+          className={`${styles.search} ${responsive.search}`}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Tìm Augustinô, Monica, Tự Thuật…"
@@ -233,14 +234,14 @@ function Canvas() {
       </div>
 
       {pathOrigin && (
-        <div className={styles.pathReceipt}>
+        <div className={`${styles.pathReceipt} ${responsive.pathReceipt}`}>
           <span>Bắt đầu từ <b>{text(index.entityById.get(pathOrigin)?.labels ?? { en: pathOrigin, vi: pathOrigin })}</b></span>
           {activePath.length > 1 && <span>{activePath.map((id) => text(index.entityById.get(id)!.labels)).join(' → ')}</span>}
         </div>
       )}
 
-      <section className={styles.interactiveWorkspace}>
-        <div className={styles.interactiveCanvas}>
+      <section className={`${styles.interactiveWorkspace} ${responsive.interactiveWorkspace}`}>
+        <div className={`${styles.interactiveCanvas} ${responsive.interactiveCanvas}`}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -263,13 +264,13 @@ function Canvas() {
           <div className={styles.canvasHint}>Chạm một thẻ để xem câu chuyện và những điều liên quan</div>
         </div>
 
-        <div className={styles.mobileInspectorBar}>
+        <div className={`${styles.mobileInspectorBar} ${responsive.mobileInspectorBar}`}>
           <button onClick={() => setInspectorOpen((open) => !open)} aria-expanded={inspectorOpen} aria-controls="entity-inspector">
             {inspectorOpen ? 'Ẩn phần giải thích' : 'Xem phần giải thích'} · {text(selected.labels)}
           </button>
         </div>
 
-        <aside id="entity-inspector" className={`${styles.entityInspector} ${!inspectorOpen ? styles.entityInspectorClosed : ''}`}>
+        <aside id="entity-inspector" className={`${styles.entityInspector} ${responsive.entityInspector} ${!inspectorOpen ? styles.entityInspectorClosed : ''}`}>
           {selectedAsset && (
             <Image
               className={styles.inspectorImage}
@@ -277,7 +278,7 @@ function Canvas() {
               alt={selectedAsset.alt.vi ?? selectedAsset.alt.en}
               width={330}
               height={235}
-              sizes="(max-width: 1050px) 100vw, 330px"
+              sizes="(max-width: 1024px) 100vw, 330px"
               style={{ objectFit: 'cover', objectPosition: selectedAsset.focalPoint ?? 'center' }}
             />
           )}
