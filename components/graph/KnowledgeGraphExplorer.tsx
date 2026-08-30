@@ -15,7 +15,7 @@ import styles from './KnowledgeGraph.module.css';
 
 type Lens='all'|'person'|'place'|'work'|'concept';
 const positions:Record<string,{x:number;y:number}>={'person.augustine-of-hippo':{x:420,y:255},'person.monica':{x:65,y:80},'person.ambrose-of-milan':{x:760,y:80},'place.tagaste':{x:70,y:445},'place.hippo-regius':{x:760,y:455},'work.confessions':{x:230,y:580},'work.city-of-god':{x:530,y:600},'concept.grace':{x:850,y:270}};
-const assets:Record<string,string>={'person.augustine-of-hippo':'art.augustine-philippe-de-champaigne','person.monica':'person.monica-piero','person.ambrose-of-milan':'person.ambrose','work.confessions':'work.confessions-manuscript'};
+const assets:Record<string,string>={'person.augustine-of-hippo':'art.augustine-philippe-de-champaigne','person.monica':'person.monica-piero','person.ambrose-of-milan':'person.ambrose','place.hippo-regius':'place.hippo-regius','work.confessions':'work.confessions-manuscript'};
 const nodeTypes={knowledge:KnowledgeEntityNode}; const index=buildExplorationIndex(entities,relationships);
 function Canvas(){
  const [lens,setLens]=useState<Lens>('all');const [query,setQuery]=useState('');const [selectedId,setSelectedId]=useState('person.augustine-of-hippo');const [pathOrigin,setPathOrigin]=useState<string|null>(null);const [history,setHistory]=useState<string[]>(['person.augustine-of-hippo']);const [journeyContext,setJourneyContext]=useState<ExplorationContext|null>(null);const [inspectorOpen,setInspectorOpen]=useState(true);const [reducedMotion,setReducedMotion]=useState(false);const [advancedOpen,setAdvancedOpen]=useState(false);const {fitView}=useReactFlow();
