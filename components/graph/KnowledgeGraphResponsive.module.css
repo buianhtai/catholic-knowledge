@@ -11,7 +11,7 @@
   min-width: 0;
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1024px) {
   .page :global([class*="interactiveWorkspace"]) {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -22,9 +22,9 @@
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 640px) {
   .page :global([class*="shell"]) {
-    padding: 10px 10px 32px;
+    padding: 10px var(--ck-page-gutter) 32px;
     overflow-x: clip;
   }
 
@@ -37,6 +37,7 @@
     font-size: clamp(32px, 10vw, 44px);
     line-height: 1;
     letter-spacing: -0.035em;
+    text-wrap: balance;
   }
 
   .page :global([class*="universeHeader"]) p {
@@ -60,7 +61,7 @@
   .page :global([class*="toolbar"]) button {
     width: 100%;
     min-width: 0;
-    min-height: 44px;
+    min-height: var(--ck-touch-target);
     height: auto;
     padding: 9px 10px;
     white-space: normal;
@@ -105,6 +106,10 @@
 
   .page :global([class*="journeyBridge"]) a {
     width: 100%;
+    min-height: var(--ck-touch-target);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
   }
 
