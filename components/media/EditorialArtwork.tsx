@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { getEditorialAsset } from '@/lib/media/assets';
 
 type Props = {
@@ -18,25 +21,51 @@ export default function EditorialArtwork({
   className,
 }: Props) {
   const asset = getEditorialAsset(assetId);
+  const [failed, setFailed] = useState(false);
   if (!asset) return null;
 
   return (
     <figure className={className} style={{ margin: 0, position: 'relative' }}>
-      <img
-        src={asset.src}
-        alt={asset.alt.en}
-        loading="lazy"
-        style={{
-          display: 'block',
-          width: '100%',
-          height,
-          objectFit: 'cover',
-          objectPosition,
-          borderRadius: radius,
-          background: '#e9dfce',
-        }}
-      />
-      {showCredit && asset.sourceUrl ? (
+      {failed ? (
+        <div
+          role="img"
+          aria-label={asset.alt.vi ?? asset.alt.en}
+          style={{
+            display: 'grid',
+            width: '100%',
+            height,
+            placeItems: 'center',
+            padding: 18,
+            borderRadius: radius,
+            background: 'linear-gradient(135deg,#e9dfce,#f7f0e5)',
+            border: '1px solid #d7c8b0',
+            color: '#5f6870',
+            textAlign: 'center',
+            font: '13px/1.45 Georgia,serif',
+          }}
+        >
+          <span>Hình ảnh tạm thời không tải được<br/><small>{asset.alt.vi ?? asset.alt.en}</small></span>
+        </div>
+      ) : (
+        <img
+          src={asset.src}
+          alt={asset.alt.vi ?? asset.alt.en}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+          style={{
+            display: 'block',
+            width: '100%',
+            height,
+            objectFit: 'cover',
+            objectPosition,
+            borderRadius: radius,
+            background: '#e9dfce',
+          }}
+        />
+      )}
+      {!failed && showCredit && asset.sourceUrl ? (
         <figcaption
           style={{
             position: 'absolute',
