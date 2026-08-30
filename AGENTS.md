@@ -37,6 +37,23 @@ Before making meaningful product or architecture changes, read:
 - Keep mobile and accessibility in scope from the first implementation.
 - Avoid introducing a new framework, database, entity type, relationship type, or major pattern without updating the relevant documentation.
 
+## Pre-PR Validation Gate
+
+Validation is part of the implementation, not a post-PR cleanup step.
+
+Before opening or updating a pull request with implementation changes:
+
+1. Run `npm run lint` and resolve errors and actionable warnings introduced by the change.
+2. Run `npm run test`.
+3. Run `npm run typecheck`.
+4. Run `npm run build`.
+5. Prefer `npm run check` when the environment supports the full combined validation.
+6. Review the changed files for obvious UI regressions, stale raw `<img>` usage, decorative glyph regressions, broken links, and responsive issues.
+7. Only describe the PR as ready after the applicable local checks pass. If a check cannot be executed in the current environment, state that limitation explicitly instead of assuming CI will catch it later.
+8. After pushing the final implementation commit, verify the associated CI run and address failures before recommending merge.
+
+Do not open a PR simply to discover lint, test, typecheck, or build failures that could have been detected before submission.
+
 ## Initial Vertical Slice
 
 Prioritize in this order:
