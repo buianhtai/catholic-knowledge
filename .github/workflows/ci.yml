@@ -31,3 +31,9 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Responsive regression
+        run: npm run test:responsive
