@@ -1,64 +1,59 @@
-.page {
-  width: 100%;
-  min-width: 0;
-  overflow-x: clip;
-}
-
-.page :global([class*="interactiveWorkspace"]),
-.page :global([class*="interactiveCanvas"]),
-.page :global([class*="entityInspector"]) {
+.shell,
+.interactiveWorkspace,
+.interactiveCanvas,
+.entityInspector {
   width: 100%;
   min-width: 0;
 }
 
 @media (max-width: 1024px) {
-  .page :global([class*="interactiveWorkspace"]) {
+  .interactiveWorkspace {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .page :global([class*="interactiveCanvas"]) {
+  .interactiveCanvas {
     height: clamp(520px, 65svh, 680px);
     min-height: 0;
   }
 }
 
 @media (max-width: 640px) {
-  .page :global([class*="shell"]) {
+  .shell {
     padding: 10px var(--ck-page-gutter) 32px;
     overflow-x: clip;
   }
 
-  .page :global([class*="universeHeader"]) {
+  .universeHeader {
     gap: 14px;
     margin-bottom: 14px;
   }
 
-  .page :global([class*="universeHeader"]) h1 {
+  .universeHeader h1 {
     font-size: clamp(32px, 10vw, 44px);
     line-height: 1;
     letter-spacing: -0.035em;
     text-wrap: balance;
   }
 
-  .page :global([class*="universeHeader"]) p {
+  .universeHeader p {
     font-size: 14px;
     line-height: 1.55;
   }
 
-  .page :global([class*="toolbar"]) {
+  .toolbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 8px;
     overflow: visible;
   }
 
-  .page :global([class*="search"]) {
+  .search {
     grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
   }
 
-  .page :global([class*="toolbar"]) button {
+  .toolbar button {
     width: 100%;
     min-width: 0;
     min-height: var(--ck-touch-target);
@@ -67,44 +62,43 @@
     white-space: normal;
   }
 
-  .page :global([class*="interactiveWorkspace"]) {
+  .interactiveWorkspace {
     gap: 8px;
     min-height: 0;
   }
 
-  .page :global([class*="interactiveCanvas"]) {
+  .interactiveCanvas {
     height: clamp(430px, 58svh, 580px);
     min-height: 0;
     border-radius: 16px;
   }
 
-  .page :global([class*="entityNode"]) {
+  .entityNode {
     width: 164px;
     grid-template-columns: 52px minmax(0, 1fr);
   }
 
-  .page :global([class*="nodeMedia"]) {
+  .nodeMedia {
     width: 52px;
     height: 60px;
   }
 
-  .page :global([class*="mobileInspectorBar"]) {
+  .mobileInspectorBar {
     position: static;
     margin-top: 8px;
     padding: 0;
   }
 
-  .page :global([class*="entityInspector"]) {
-    width: 100%;
+  .entityInspector {
     max-height: none;
   }
 
-  .page :global([class*="journeyBridge"]),
-  .page :global([class*="pathReceipt"]) {
+  .journeyBridge,
+  .pathReceipt {
     width: 100%;
   }
 
-  .page :global([class*="journeyBridge"]) a {
+  .journeyBridge a {
     width: 100%;
     min-height: var(--ck-touch-target);
     display: inline-flex;
@@ -113,7 +107,7 @@
     text-align: center;
   }
 
-  .page :global([class*="pathReceipt"]) {
+  .pathReceipt {
     overflow-wrap: anywhere;
   }
 }
