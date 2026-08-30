@@ -16,6 +16,31 @@ type Props = {
 };
 
 const DEFAULT_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw';
+const FOCAL_POINTS: Record<string, string> = {
+  'art.augustine-philippe-de-champaigne': 'center 18%',
+  'person.monica-piero': 'center 20%',
+  'person.mary-theotokos': 'center 18%',
+  'person.ambrose': 'center 18%',
+  'person.peter': 'center 18%',
+  'person.paul': 'center 18%',
+  'person.athanasius': 'center 18%',
+  'person.constantine': 'center 22%',
+  'art.gutenberg-bible': 'center 35%',
+  'art.nicaea-icon': 'center 35%',
+  'art.rublev-trinity': 'center 30%',
+  'art.annunciation-fra-angelico': 'center 32%',
+  'art.last-supper-leonardo': 'center 45%',
+  'art.resurrection-christ': 'center 34%',
+  'art.mass-at-bolsena': 'center 40%',
+  'place.rome-st-peters': 'center 45%',
+  'place.jerusalem-holy-sepulchre': 'center 42%',
+  'place.lourdes-sanctuary': 'center 45%',
+  'place.fatima-sanctuary': 'center 44%',
+  'place.hippo-regius': 'center 52%',
+  'place.nazareth-annunciation': 'center 42%',
+  'place.la-vang-shrine': 'center 42%',
+  'work.confessions-manuscript': 'center 34%',
+};
 
 export default function EditorialArtwork({
   assetId,
@@ -31,7 +56,7 @@ export default function EditorialArtwork({
   const [failed, setFailed] = useState(false);
   if (!asset) return null;
 
-  const position = objectPosition ?? asset.focalPoint ?? 'center';
+  const position = objectPosition ?? FOCAL_POINTS[assetId] ?? 'center';
 
   return (
     <figure className={className} style={{ margin: 0, position: 'relative' }}>
@@ -58,7 +83,7 @@ export default function EditorialArtwork({
       ) : (
         <div style={{ position: 'relative', width: '100%', height, overflow: 'hidden', borderRadius: radius, background: '#e9dfce' }}>
           <Image
-            src={asset.localSrc ?? asset.src}
+            src={asset.src}
             alt={asset.alt.vi ?? asset.alt.en}
             fill
             sizes={sizes}
