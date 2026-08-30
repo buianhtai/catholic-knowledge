@@ -1,0 +1,126 @@
+.page {
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.hero,
+.grid,
+.card,
+.cardCopy,
+.actions,
+.readingRow {
+  min-width: 0;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.title {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.lead,
+.cardCopy,
+.readingRow p {
+  overflow-wrap: anywhere;
+}
+
+.timelineGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+}
+
+.timelineCard {
+  min-width: 0;
+  grid-template-columns: 88px minmax(0, 1fr) !important;
+}
+
+.readingRow {
+  grid-template-columns: minmax(100px, 120px) minmax(0, 1fr) !important;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions a,
+.actions button,
+.storyCard,
+.quizActions button {
+  min-height: var(--ck-touch-target);
+}
+
+.storyCard {
+  min-width: 0;
+}
+
+.quizActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .heroMedia {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-top: 22px !important;
+    padding-bottom: 44px !important;
+  }
+
+  .title {
+    font-size: clamp(36px, 12vw, 54px) !important;
+    line-height: .98 !important;
+    letter-spacing: -.04em !important;
+  }
+
+  .lead {
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+  }
+
+  .timelineCard,
+  .readingRow,
+  .storyCard {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .timelineCard {
+    gap: 10px !important;
+  }
+
+  .readingRow {
+    gap: 8px !important;
+  }
+
+  .actions,
+  .quizActions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .actions a,
+  .actions button,
+  .quizActions button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .storyCard {
+    gap: 10px !important;
+  }
+}
