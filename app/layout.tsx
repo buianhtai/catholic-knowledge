@@ -3,6 +3,7 @@ import Link from 'next/link';
 import SiteNavigation from '@/components/navigation/SiteNavigation';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import './globals.css';
+import '@/styles/responsive.css';
 
 export const metadata: Metadata = {
   title: {
