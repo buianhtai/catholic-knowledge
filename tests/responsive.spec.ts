@@ -22,18 +22,6 @@ const viewportMatrix = [
   { name: 'desktop', width: 1440, height: 900 },
 ] as const;
 
-async function expectNoDocumentOverflow() {
-  const metrics = await test.info().page?.evaluate(() => ({
-    documentWidth: document.documentElement.scrollWidth,
-    viewportWidth: document.documentElement.clientWidth,
-    bodyWidth: document.body.scrollWidth,
-  }));
-
-  expect(metrics).toBeTruthy();
-  expect(metrics!.documentWidth, 'document should not overflow horizontally').toBeLessThanOrEqual(metrics!.viewportWidth + 1);
-  expect(metrics!.bodyWidth, 'body should not overflow horizontally').toBeLessThanOrEqual(metrics!.viewportWidth + 1);
-}
-
 for (const viewport of viewportMatrix) {
   test.describe(viewport.name, () => {
     test.use({ viewport: { width: viewport.width, height: viewport.height } });
